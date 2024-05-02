@@ -4,7 +4,6 @@ import com.github.pozzoo.quickwaystones.QuickWaystones;
 import com.github.pozzoo.quickwaystones.data.WaystoneData;
 import com.github.pozzoo.quickwaystones.gui.WaystoneGUI;
 import com.github.pozzoo.quickwaystones.utils.StringUtils;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.metadata.FixedMetadataValue;
 
 public class OnPlayerInteract implements Listener {
     public OnPlayerInteract(QuickWaystones plugin) { Bukkit.getPluginManager().registerEvents(this, plugin); }

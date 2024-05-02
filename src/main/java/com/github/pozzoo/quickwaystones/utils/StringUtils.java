@@ -1,6 +1,7 @@
 package com.github.pozzoo.quickwaystones.utils;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.ArrayList;
@@ -19,5 +20,9 @@ public class StringUtils {
         }
 
         return components;
+    }
+
+    public static Component formatItemName(String itemName) {
+        return MiniMessage.miniMessage().deserialize(itemName).decoration(TextDecoration.ITALIC, false);
     }
 }

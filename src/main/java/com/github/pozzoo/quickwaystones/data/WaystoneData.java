@@ -19,10 +19,6 @@ public class WaystoneData {
         this.location = location;
     }
 
-    public boolean isSameLocation(Location location) {
-        return this.location.equals(location);
-    }
-
     public String getName() {
         return name;
     }
@@ -33,10 +29,6 @@ public class WaystoneData {
 
     public Location getLocation() {
         return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     @Override
