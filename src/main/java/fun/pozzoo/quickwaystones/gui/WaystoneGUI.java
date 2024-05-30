@@ -1,8 +1,8 @@
-package com.github.pozzoo.quickwaystones.gui;
+package fun.pozzoo.quickwaystones.gui;
 
-import com.github.pozzoo.quickwaystones.QuickWaystones;
-import com.github.pozzoo.quickwaystones.data.WaystoneData;
-import com.github.pozzoo.quickwaystones.utils.StringUtils;
+import fun.pozzoo.quickwaystones.QuickWaystones;
+import fun.pozzoo.quickwaystones.data.WaystoneData;
+import fun.pozzoo.quickwaystones.utils.StringUtils;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;

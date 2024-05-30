@@ -1,13 +1,14 @@
-package com.github.pozzoo.quickwaystones.managers;
+package fun.pozzoo.quickwaystones.managers;
 
-import com.github.pozzoo.quickwaystones.QuickWaystones;
-import com.github.pozzoo.quickwaystones.data.WaystoneData;
+import fun.pozzoo.quickwaystones.QuickWaystones;
+import fun.pozzoo.quickwaystones.data.WaystoneData;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -35,19 +36,17 @@ public class DataManager {
 
         if (config.getKeys(true).isEmpty()) return;
 
-        keys = config.getConfigurationSection("Waystones.").getKeys(true);
+        keys = Objects.requireNonNull(config.getConfigurationSection("Waystones.")).getKeys(false);
     }
 
     public void loadWaystonesData() {
-
         try {
             config.load(file);
 
             for (String key : keys) {
-                WaystoneData waystoneData = new WaystoneData(key, config.getLocation("Waystones." + key));
+                WaystoneData waystoneData = new WaystoneData(key, config.getLocation("Waystones." + key + ".location"), config.getString("Waystones." + key + ".owner"));
                 QuickWaystones.getWaystonesMap().put(waystoneData.getLocation(), waystoneData);
             }
-
         } catch (InvalidConfigurationException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +56,8 @@ public class DataManager {
         configOverwrite = new YamlConfiguration();
 
         for (WaystoneData waystone : waystones) {
-            configOverwrite.set("Waystones." + waystone.getName(), waystone.getLocation());
+            configOverwrite.set("Waystones." + waystone.getName() + ".location", waystone.getLocation());
+            configOverwrite.set("Waystones." + waystone.getName() + ".owner", waystone.getOwner());
         }
 
         save();

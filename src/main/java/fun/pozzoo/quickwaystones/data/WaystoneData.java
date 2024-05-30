@@ -1,22 +1,25 @@
-package com.github.pozzoo.quickwaystones.data;
+package fun.pozzoo.quickwaystones.data;
 
-import com.github.pozzoo.quickwaystones.QuickWaystones;
+import fun.pozzoo.quickwaystones.QuickWaystones;
 import org.bukkit.Location;
 
 public class WaystoneData {
     private int id;
     private String name;
+    private String owner;
     private Location location;
 
-    public WaystoneData(Location location) {
+    public WaystoneData(Location location, String owner) {
         id = QuickWaystones.getAndIncrementLastWaystoneID();
         name = "Waystone " + id ;
         this.location = location;
+        this.owner = owner;
     }
-    public WaystoneData(String name, Location location) {
+    public WaystoneData(String name, Location location, String owner) {
         id = QuickWaystones.getAndIncrementLastWaystoneID();
         this.name = name;
         this.location = location;
+        this.owner = owner;
     }
 
     public String getName() {
@@ -25,6 +28,10 @@ public class WaystoneData {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public Location getLocation() {
@@ -37,6 +44,7 @@ public class WaystoneData {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", location=" + location +
+                ", owner='" + owner + '\'' +
                 '}';
     }
 }

@@ -1,4 +1,4 @@
-package com.github.pozzoo.quickwaystones.utils;
+package fun.pozzoo.quickwaystones.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;

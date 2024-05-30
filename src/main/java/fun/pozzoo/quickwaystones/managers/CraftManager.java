@@ -1,6 +1,6 @@
-package com.github.pozzoo.quickwaystones.managers;
+package fun.pozzoo.quickwaystones.managers;
 
-import com.github.pozzoo.quickwaystones.QuickWaystones;
+import fun.pozzoo.quickwaystones.QuickWaystones;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;

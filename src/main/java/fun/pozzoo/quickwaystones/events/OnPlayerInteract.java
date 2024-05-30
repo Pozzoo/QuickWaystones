@@ -1,9 +1,9 @@
-package com.github.pozzoo.quickwaystones.events;
+package fun.pozzoo.quickwaystones.events;
 
-import com.github.pozzoo.quickwaystones.QuickWaystones;
-import com.github.pozzoo.quickwaystones.data.WaystoneData;
-import com.github.pozzoo.quickwaystones.gui.WaystoneGUI;
-import com.github.pozzoo.quickwaystones.utils.StringUtils;
+import fun.pozzoo.quickwaystones.QuickWaystones;
+import fun.pozzoo.quickwaystones.data.WaystoneData;
+import fun.pozzoo.quickwaystones.gui.WaystoneGUI;
+import fun.pozzoo.quickwaystones.utils.StringUtils;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,7 +17,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 public class OnPlayerInteract implements Listener {
-    public OnPlayerInteract(QuickWaystones plugin) { Bukkit.getPluginManager().registerEvents(this, plugin); }
+    private final QuickWaystones plugin;
+
+    public OnPlayerInteract(QuickWaystones plugin) {
+        this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -32,8 +37,8 @@ public class OnPlayerInteract implements Listener {
         if (event.getItem() == null) {
             if (!QuickWaystones.getWaystonesMap().containsKey(block.getLocation())) {
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                player.sendMessage(StringUtils.formatString("<gold> Waystone Activated"));
-                QuickWaystones.getWaystonesMap().put(block.getLocation(), new WaystoneData(block.getLocation()));
+                player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
+                QuickWaystones.getWaystonesMap().put(block.getLocation(), new WaystoneData(block.getLocation(), player.getName()));
                 return;
             }
 

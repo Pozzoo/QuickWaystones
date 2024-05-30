@@ -1,4 +1,4 @@
 name: QuickWaystones
 version: '${project.version}'
-main: com.github.pozzoo.quickwaystones.QuickWaystones
+main: fun.pozzoo.quickwaystones.QuickWaystones
 api-version: '1.20'
