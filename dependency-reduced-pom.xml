@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.pozzoo</groupId>
+  <groupId>fun.pozzoo.quickwaystones</groupId>
   <artifactId>QuickWaystones</artifactId>
   <name>QuickWaystones</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1.1</version>
   <build>
     <resources>
       <resource>
@@ -15,7 +15,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -23,19 +23,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -48,7 +36,7 @@
           <relocations>
             <relocation>
               <pattern>dev.triumphteam.gui</pattern>
-              <shadedPattern>com.github.pozzoo.gui</shadedPattern>
+              <shadedPattern>fun.pozzoo.quickwaystones.gui</shadedPattern>
             </relocation>
           </relocations>
         </configuration>
