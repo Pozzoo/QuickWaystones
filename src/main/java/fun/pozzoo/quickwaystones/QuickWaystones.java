@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.OptionalInt;
 
 public final class QuickWaystones extends JavaPlugin {
     private static QuickWaystones plugin;
@@ -36,7 +37,13 @@ public final class QuickWaystones extends JavaPlugin {
         dataManager = new DataManager();
         dataManager.loadWaystonesData();
 
-        lastWaystoneID = waystonesMap.size();
+        OptionalInt maxId = waystonesMap.values().stream()
+                .mapToInt(WaystoneData::getId)
+                .max();
+
+        if (maxId.isPresent()) {
+            lastWaystoneID = maxId.getAsInt();
+        }
 
         metrics = new Metrics(plugin, 22064);
     }
