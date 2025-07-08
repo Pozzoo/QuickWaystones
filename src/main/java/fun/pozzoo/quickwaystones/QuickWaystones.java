@@ -14,8 +14,8 @@ import java.util.OptionalInt;
 
 public final class QuickWaystones extends JavaPlugin {
     private static QuickWaystones plugin;
-    private DataManager dataManager;
-    private static Map<Location, WaystoneData> waystonesMap;
+    private static DataManager dataManager;
+    private static final Map<Location, WaystoneData> waystonesMap = new HashMap<>();
     private static int lastWaystoneID = 0;
     private static Metrics metrics;
 
@@ -31,8 +31,6 @@ public final class QuickWaystones extends JavaPlugin {
 
         new OnPlayerInteract(plugin);
         new OnBlockBreak(plugin);
-
-        waystonesMap = new HashMap<>();
 
         dataManager = new DataManager();
         dataManager.loadWaystonesData();
@@ -51,7 +49,7 @@ public final class QuickWaystones extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        dataManager.saveWaystoneData(waystonesMap.values());
+        saveData();
 
         metrics.shutdown();
     }
@@ -67,5 +65,23 @@ public final class QuickWaystones extends JavaPlugin {
 
     public static Map<Location, WaystoneData> getWaystonesMap() {
         return waystonesMap;
+    }
+
+    public static void removeWaystone(Location location) {
+        waystonesMap.remove(location);
+        saveData();
+    }
+
+    public static void createWaystone(Location location, WaystoneData waystoneData) {
+        waystonesMap.put(location, waystoneData);
+        saveData();
+    }
+
+    public static WaystoneData getWaystone(Location location) {
+        return waystonesMap.get(location);
+    }
+
+    public static void saveData() {
+        dataManager.saveWaystoneData(waystonesMap.values());
     }
 }
