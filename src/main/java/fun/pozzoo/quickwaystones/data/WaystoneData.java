@@ -4,10 +4,10 @@ import fun.pozzoo.quickwaystones.QuickWaystones;
 import org.bukkit.Location;
 
 public class WaystoneData {
-    private int id;
+    private final int id;
     private String name;
-    private String owner;
-    private Location location;
+    private final String owner;
+    private final Location location;
 
     public WaystoneData(Location location, String owner) {
         id = QuickWaystones.getAndIncrementLastWaystoneID();
@@ -20,6 +20,10 @@ public class WaystoneData {
         this.name = name;
         this.location = location;
         this.owner = owner;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
