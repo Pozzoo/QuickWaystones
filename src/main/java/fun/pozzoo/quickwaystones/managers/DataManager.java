@@ -6,10 +6,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 public class DataManager {
@@ -44,7 +41,7 @@ public class DataManager {
             config.load(file);
 
             for (String key : keys) {
-                WaystoneData waystoneData = new WaystoneData(key, config.getLocation("Waystones." + key + ".location"), config.getString("Waystones." + key + ".owner"));
+                WaystoneData waystoneData = new WaystoneData(key, config.getLocation("Waystones." + key + ".location"), config.getObject("Waystones." + key + ".owner", UUID.class));
                 QuickWaystones.getWaystonesMap().put(waystoneData.getLocation(), waystoneData);
             }
         } catch (InvalidConfigurationException | IOException e) {
@@ -57,7 +54,7 @@ public class DataManager {
 
         for (WaystoneData waystone : waystones) {
             configOverwrite.set("Waystones." + waystone.getName() + ".location", waystone.getLocation());
-            configOverwrite.set("Waystones." + waystone.getName() + ".owner", waystone.getOwner());
+            configOverwrite.set("Waystones." + waystone.getName() + ".owner", waystone.getOwner().toString());
         }
 
         save();
