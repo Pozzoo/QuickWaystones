@@ -30,11 +30,15 @@ public class OnPlayerInteract implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getClickedBlock() == null) return;
         if (event.getClickedBlock().getType() != Material.LODESTONE) return;
+        if (event.getPlayer().isSneaking()) return;
+
+        event.setCancelled(true);
 
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
 
-        if (event.getItem() == null) {
+        if (event.getItem() == null || event.getItem().getType() != Material.NAME_TAG) {
+
             if (!QuickWaystones.getWaystonesMap().containsKey(block.getLocation())) {
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                 player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
@@ -43,10 +47,7 @@ public class OnPlayerInteract implements Listener {
             }
 
             WaystoneGUI.runGUI(player);
-            return;
-        }
-
-        if (event.getItem().getType() == Material.NAME_TAG) {
+        } else {
             TextComponent textComponent = (TextComponent) event.getItem().getItemMeta().displayName();
 
             if (textComponent == null) return;
@@ -54,7 +55,5 @@ public class OnPlayerInteract implements Listener {
             QuickWaystones.getWaystone(block.getLocation()).setName(textComponent.content());
             player.getInventory().getItemInMainHand().subtract();
         }
-
-
     }
 }
