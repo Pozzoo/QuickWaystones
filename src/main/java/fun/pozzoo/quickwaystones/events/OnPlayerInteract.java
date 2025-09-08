@@ -37,15 +37,14 @@ public class OnPlayerInteract implements Listener {
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
 
+        if (!QuickWaystones.getWaystonesMap().containsKey(block.getLocation())) {
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
+            QuickWaystones.createWaystone(block.getLocation(), new WaystoneData(block.getLocation(), player.getUniqueId()));
+            return;
+        }
+
         if (event.getItem() == null || event.getItem().getType() != Material.NAME_TAG) {
-
-            if (!QuickWaystones.getWaystonesMap().containsKey(block.getLocation())) {
-                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
-                QuickWaystones.createWaystone(block.getLocation(), new WaystoneData(block.getLocation(), player.getUniqueId()));
-                return;
-            }
-
             WaystoneGUI.runGUI(player);
         } else {
             TextComponent textComponent = (TextComponent) event.getItem().getItemMeta().displayName();
