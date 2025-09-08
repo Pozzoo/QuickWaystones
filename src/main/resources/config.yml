@@ -1,3 +1,6 @@
+Settings:
+  HideUndiscoveredWaystones: true
 Messages:
   WaystoneActivated: "Waystone Activated"
   WaystoneBrokenByOther: "This waystone isn't yours"
+  WaystoneDiscovered: "Waystone Discovered"

@@ -8,14 +8,13 @@ import fun.pozzoo.quickwaystones.managers.DataManager;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.OptionalInt;
+import java.util.*;
 
 public final class QuickWaystones extends JavaPlugin {
     private static QuickWaystones plugin;
     private static DataManager dataManager;
     private static final Map<Location, WaystoneData> waystonesMap = new HashMap<>();
+    private static final Map<UUID, Set<Integer>> playerAccess = new HashMap<>();
     private static int lastWaystoneID = 0;
     private static Metrics metrics;
 
@@ -33,7 +32,7 @@ public final class QuickWaystones extends JavaPlugin {
         new OnBlockBreak(plugin);
 
         dataManager = new DataManager();
-        dataManager.loadWaystonesData();
+        dataManager.loadData();
 
         OptionalInt maxId = waystonesMap.values().stream()
                 .mapToInt(WaystoneData::getId)
@@ -81,7 +80,11 @@ public final class QuickWaystones extends JavaPlugin {
         return waystonesMap.get(location);
     }
 
+    public static Map<UUID, Set<Integer>> getPlayerAccess() {
+        return playerAccess;
+    }
+
     public static void saveData() {
-        dataManager.saveWaystoneData(waystonesMap.values());
+        dataManager.saveData(waystonesMap.values(), playerAccess);
     }
 }
