@@ -19,10 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WaystoneGUI implements Listener {
 
@@ -53,7 +50,13 @@ public class WaystoneGUI implements Listener {
     }
 
     private static void openPage(Player player, int page) {
-        Map<Location, WaystoneData> waystonesMap = QuickWaystones.getWaystonesMap();
+        Map<Location, WaystoneData> waystonesMap = new HashMap<>(QuickWaystones.getWaystonesMap());
+        Map<UUID, Set<Integer>> playerAccess = QuickWaystones.getPlayerAccess();
+
+        if (QuickWaystones.getInstance().getConfig().getBoolean("Settings.HideUndiscoveredWaystones")) {
+            waystonesMap.entrySet().removeIf(entry -> !playerAccess.get(player.getUniqueId()).contains(entry.getValue().getId()));
+        }
+
         List<WaystoneData> waystones = new ArrayList<>(waystonesMap.values());
 
         int totalItems = waystones.size();

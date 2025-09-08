@@ -16,6 +16,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import java.util.HashSet;
+
 public class OnPlayerInteract implements Listener {
     private final QuickWaystones plugin;
 
@@ -30,31 +32,45 @@ public class OnPlayerInteract implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getClickedBlock() == null) return;
         if (event.getClickedBlock().getType() != Material.LODESTONE) return;
+        if (event.getPlayer().isSneaking()) return;
+
+        event.setCancelled(true);
 
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
 
-        if (event.getItem() == null) {
-            if (!QuickWaystones.getWaystonesMap().containsKey(block.getLocation())) {
-                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
-                QuickWaystones.createWaystone(block.getLocation(), new WaystoneData(block.getLocation(), player.getName()));
-                return;
-            }
+        QuickWaystones.getPlayerAccess().computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
 
-            WaystoneGUI.runGUI(player);
+        if (!QuickWaystones.getWaystonesMap().containsKey(block.getLocation())) {
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
+            QuickWaystones.createWaystone(block.getLocation(), new WaystoneData(block.getLocation(), player.getUniqueId()));
+
+            QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(block.getLocation()).getId());
+
             return;
         }
 
-        if (event.getItem().getType() == Material.NAME_TAG) {
+        if (this.plugin.getConfig().getBoolean("Settings.HideUndiscoveredWaystones")) {
+            if (!QuickWaystones.getPlayerAccess().get(player.getUniqueId()).contains(QuickWaystones.getWaystonesMap().get(block.getLocation()).getId())) {
+                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneDiscovered")));
+                QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(block.getLocation()).getId());
+            }
+        } else {
+            QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(block.getLocation()).getId());
+        }
+
+        if (event.getItem() == null || event.getItem().getType() != Material.NAME_TAG) {
+            WaystoneGUI.runGUI(player);
+        } else {
             TextComponent textComponent = (TextComponent) event.getItem().getItemMeta().displayName();
 
             if (textComponent == null) return;
+            if (textComponent.content().equals(QuickWaystones.getWaystonesMap().get(block.getLocation()).getName())) return;
 
             QuickWaystones.getWaystone(block.getLocation()).setName(textComponent.content());
             player.getInventory().getItemInMainHand().subtract();
         }
-
-
     }
 }
