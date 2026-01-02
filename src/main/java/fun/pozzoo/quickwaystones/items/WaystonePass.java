@@ -12,6 +12,8 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collections;
 
+import static fun.pozzoo.quickwaystones.utils.EnchantmentUtils.getInfinityEnchant;
+
 public class WaystonePass {
 
     private final ItemStack item;
@@ -29,7 +31,11 @@ public class WaystonePass {
             meta.displayName(StringUtils.formatString("Waystone Pass"));
             meta.lore(StringUtils.formatStringList(Collections.singletonList("Right click to discover the assigned waystone!")));
 
-            meta.addEnchant(Enchantment.INFINITY, 5, true);
+            Enchantment infinity = getInfinityEnchant();
+            if (infinity != null) {
+                meta.addEnchant(infinity, 5, true);
+            }
+
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
             meta.getPersistentDataContainer().set(this.pass_key, PersistentDataType.BYTE, (byte) 1);
