@@ -1,6 +1,9 @@
 Settings:
   HideUndiscoveredWaystones: true
+  EnableWaystonePass: true
 Messages:
   WaystoneActivated: "Waystone Activated"
   WaystoneBrokenByOther: "This waystone isn't yours"
   WaystoneDiscovered: "Waystone Discovered"
+  WaystoneAlreadyDiscovered: "Waystone is already discovered"
+  WaystonePassBound: "WaystonePass bound to"
