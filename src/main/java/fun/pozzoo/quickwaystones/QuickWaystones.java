@@ -1,5 +1,6 @@
 package fun.pozzoo.quickwaystones;
 
+import fun.pozzoo.quickwaystones.commands.MainCommand;
 import fun.pozzoo.quickwaystones.data.WaystoneData;
 import fun.pozzoo.quickwaystones.events.OnBlockBreak;
 import fun.pozzoo.quickwaystones.events.OnPlayerInteract;
@@ -7,6 +8,7 @@ import fun.pozzoo.quickwaystones.items.WaystonePass;
 import fun.pozzoo.quickwaystones.managers.CraftManager;
 import fun.pozzoo.quickwaystones.managers.DataManager;
 import org.bukkit.Location;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -44,6 +46,14 @@ public final class QuickWaystones extends JavaPlugin {
 
         if (maxId.isPresent()) {
             lastWaystoneID = maxId.getAsInt();
+        }
+
+        MainCommand mainCommand = new MainCommand(this);
+        PluginCommand command = getCommand("quickWaystones");
+
+        if (command != null) {
+            command.setExecutor(mainCommand);
+            command.setTabCompleter(mainCommand);
         }
 
         metrics = new Metrics(plugin, 22064);
