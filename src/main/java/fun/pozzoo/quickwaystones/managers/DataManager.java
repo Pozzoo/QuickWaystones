@@ -6,20 +6,22 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.logging.Logger;
 
 
 public class DataManager {
+    private final Logger logger;
     private File file;
     private YamlConfiguration config;
     private YamlConfiguration configOverwrite;
-    private Set<String> keys;
+    private Set<String> waystoneKeys;
+    private Set<String> accessKeys;
 
     public DataManager() {
-        keys = new HashSet<>();
+        logger = QuickWaystones.getInstance().getLogger();
+        waystoneKeys = new HashSet<>();
+        accessKeys = new HashSet<>();
         checkFile();
     }
 
@@ -36,28 +38,37 @@ public class DataManager {
 
         if (config.getKeys(true).isEmpty()) return;
 
-        keys = Objects.requireNonNull(config.getConfigurationSection("Waystones.")).getKeys(false);
+        waystoneKeys = Objects.requireNonNull(config.getConfigurationSection("Waystones.")).getKeys(false);
+        accessKeys = Objects.requireNonNull(config.getConfigurationSection("Access.")).getKeys(false);
     }
 
-    public void loadWaystonesData() {
+    public void loadData() {
         try {
             config.load(file);
 
-            for (String key : keys) {
-                WaystoneData waystoneData = new WaystoneData(key, config.getLocation("Waystones." + key + ".location"), config.getString("Waystones." + key + ".owner"));
+            for (String key : waystoneKeys) {
+                WaystoneData waystoneData = new WaystoneData(key, config.getLocation("Waystones." + key + ".location"), UUID.fromString(Objects.requireNonNull(config.getString("Waystones." + key + ".owner"))));
                 QuickWaystones.getWaystonesMap().put(waystoneData.getLocation(), waystoneData);
+            }
+
+            for (String key : accessKeys) {
+                QuickWaystones.getPlayerAccess().put(UUID.fromString(key), new HashSet<>(Arrays.asList(Objects.requireNonNull(config.getIntegerList("Access." + key)).toArray(new Integer[0]))));
             }
         } catch (InvalidConfigurationException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void saveWaystoneData(Collection<WaystoneData> waystones) {
+    public void saveData(Collection<WaystoneData> waystones, Map<UUID, Set<Integer>> playerAccess) {
         configOverwrite = new YamlConfiguration();
 
         for (WaystoneData waystone : waystones) {
             configOverwrite.set("Waystones." + waystone.getName() + ".location", waystone.getLocation());
-            configOverwrite.set("Waystones." + waystone.getName() + ".owner", waystone.getOwner());
+            configOverwrite.set("Waystones." + waystone.getName() + ".owner", waystone.getOwner().toString());
+        }
+
+        for (Map.Entry<UUID, Set<Integer>> entry : playerAccess.entrySet()) {
+            configOverwrite.set("Access." + entry.getKey().toString(), entry.getValue().toArray(new Integer[0]));
         }
 
         save();
@@ -69,7 +80,8 @@ public class DataManager {
         try {
             configOverwrite.save(file);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.severe("Failed to save waystones.yml: " + e.getMessage());
+            logger.severe("Stack trace: " + Arrays.toString(e.getStackTrace()));
         }
     }
 }
