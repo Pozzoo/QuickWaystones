@@ -1,4 +1,4 @@
-package fun.pozzoo.quickwaystones.commands;
+package dev.pozzoo.quickwaystones.commands;
 
 import org.bukkit.command.CommandSender;
 

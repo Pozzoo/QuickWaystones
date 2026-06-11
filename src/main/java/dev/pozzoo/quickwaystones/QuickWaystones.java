@@ -1,12 +1,12 @@
-package fun.pozzoo.quickwaystones;
+package dev.pozzoo.quickwaystones;
 
-import fun.pozzoo.quickwaystones.commands.MainCommand;
-import fun.pozzoo.quickwaystones.data.WaystoneData;
-import fun.pozzoo.quickwaystones.events.OnBlockBreak;
-import fun.pozzoo.quickwaystones.events.OnPlayerInteract;
-import fun.pozzoo.quickwaystones.items.WaystonePass;
-import fun.pozzoo.quickwaystones.managers.CraftManager;
-import fun.pozzoo.quickwaystones.managers.DataManager;
+import dev.pozzoo.quickwaystones.commands.MainCommand;
+import dev.pozzoo.quickwaystones.data.WaystoneData;
+import dev.pozzoo.quickwaystones.events.OnBlockBreak;
+import dev.pozzoo.quickwaystones.events.OnPlayerInteract;
+import dev.pozzoo.quickwaystones.items.WaystonePass;
+import dev.pozzoo.quickwaystones.managers.CraftManager;
+import dev.pozzoo.quickwaystones.managers.DataManager;
 import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;

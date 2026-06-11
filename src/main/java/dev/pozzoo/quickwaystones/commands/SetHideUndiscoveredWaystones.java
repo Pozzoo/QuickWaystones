@@ -1,6 +1,6 @@
-package fun.pozzoo.quickwaystones.commands;
+package dev.pozzoo.quickwaystones.commands;
 
-import fun.pozzoo.quickwaystones.QuickWaystones;
+import dev.pozzoo.quickwaystones.QuickWaystones;
 import org.bukkit.command.CommandSender;
 
 public class SetHideUndiscoveredWaystones implements SubCommand {

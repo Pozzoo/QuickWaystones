@@ -1,4 +1,4 @@
-package fun.pozzoo.quickwaystones.utils;
+package dev.pozzoo.quickwaystones.utils;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;

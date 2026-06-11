@@ -1,8 +1,8 @@
-package fun.pozzoo.quickwaystones.gui;
+package dev.pozzoo.quickwaystones.gui;
 
-import fun.pozzoo.quickwaystones.QuickWaystones;
-import fun.pozzoo.quickwaystones.data.WaystoneData;
-import fun.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.QuickWaystones;
+import dev.pozzoo.quickwaystones.data.WaystoneData;
+import dev.pozzoo.quickwaystones.utils.StringUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

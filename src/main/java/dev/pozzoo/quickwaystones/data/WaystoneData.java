@@ -1,6 +1,6 @@
-package fun.pozzoo.quickwaystones.data;
+package dev.pozzoo.quickwaystones.data;
 
-import fun.pozzoo.quickwaystones.QuickWaystones;
+import dev.pozzoo.quickwaystones.QuickWaystones;
 import org.bukkit.Location;
 
 import java.util.UUID;

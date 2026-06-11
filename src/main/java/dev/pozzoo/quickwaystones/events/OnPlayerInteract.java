@@ -1,9 +1,9 @@
-package fun.pozzoo.quickwaystones.events;
+package dev.pozzoo.quickwaystones.events;
 
-import fun.pozzoo.quickwaystones.QuickWaystones;
-import fun.pozzoo.quickwaystones.data.WaystoneData;
-import fun.pozzoo.quickwaystones.gui.WaystoneGUI;
-import fun.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.QuickWaystones;
+import dev.pozzoo.quickwaystones.data.WaystoneData;
+import dev.pozzoo.quickwaystones.gui.WaystoneGUI;
+import dev.pozzoo.quickwaystones.utils.StringUtils;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

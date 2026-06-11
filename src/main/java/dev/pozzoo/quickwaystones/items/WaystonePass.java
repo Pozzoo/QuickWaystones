@@ -1,7 +1,7 @@
-package fun.pozzoo.quickwaystones.items;
+package dev.pozzoo.quickwaystones.items;
 
-import fun.pozzoo.quickwaystones.QuickWaystones;
-import fun.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.QuickWaystones;
+import dev.pozzoo.quickwaystones.utils.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collections;
 
-import static fun.pozzoo.quickwaystones.utils.EnchantmentUtils.getInfinityEnchant;
+import static dev.pozzoo.quickwaystones.utils.EnchantmentUtils.getInfinityEnchant;
 
 public class WaystonePass {
 

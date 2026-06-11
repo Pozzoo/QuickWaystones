@@ -1,7 +1,7 @@
-package fun.pozzoo.quickwaystones.managers;
+package dev.pozzoo.quickwaystones.managers;
 
-import fun.pozzoo.quickwaystones.QuickWaystones;
-import fun.pozzoo.quickwaystones.data.WaystoneData;
+import dev.pozzoo.quickwaystones.QuickWaystones;
+import dev.pozzoo.quickwaystones.data.WaystoneData;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
