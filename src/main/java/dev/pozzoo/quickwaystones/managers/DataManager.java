@@ -48,7 +48,7 @@ public class DataManager {
             int lastComputedId = 0;
 
             for (String key : waystoneKeys) {
-                WaystoneData waystoneData = new WaystoneData(Integer.parseInt(key), config.getString("Waystones." + key + ".name"), config.getLocation("Waystones." + key + ".location"), UUID.fromString(Objects.requireNonNull(config.getString("Waystones." + key + ".owner"))));
+                WaystoneData waystoneData = new WaystoneData(Integer.parseInt(key), config.getString("Waystones." + key + ".name"), config.getLocation("Waystones." + key + ".location"), UUID.fromString(Objects.requireNonNull(config.getString("Waystones." + key + ".owner"))), Integer.parseInt(Objects.requireNonNull(config.getString("Waystones." + key + ".direction"))));
                 QuickWaystones.getWaystonesMap().put(waystoneData.getLocation(), waystoneData);
 
                 if (waystoneData.getId() > lastComputedId) lastComputedId = waystoneData.getId();
@@ -68,11 +68,10 @@ public class DataManager {
         configOverwrite = new YamlConfiguration();
 
         for (WaystoneData waystone : waystones) {
-            System.out.println("Waystones." + waystone.getId() + ".name" + waystone.getName());
-
             configOverwrite.set("Waystones." + waystone.getId() + ".name", waystone.getName());
             configOverwrite.set("Waystones." + waystone.getId() + ".location", waystone.getLocation());
             configOverwrite.set("Waystones." + waystone.getId() + ".owner", waystone.getOwner().toString());
+            configOverwrite.set("Waystones." + waystone.getId() + ".direction", waystone.getDirection());
         }
 
         for (Map.Entry<UUID, Set<Integer>> entry : playerAccess.entrySet()) {
