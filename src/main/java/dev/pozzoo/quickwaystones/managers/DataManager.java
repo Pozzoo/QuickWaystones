@@ -42,18 +42,23 @@ public class DataManager {
         accessKeys = Objects.requireNonNull(config.getConfigurationSection("Access.")).getKeys(false);
     }
 
-    public void loadData() {
+    public int loadData() {
         try {
             config.load(file);
+            int lastComputedId = 0;
 
             for (String key : waystoneKeys) {
-                WaystoneData waystoneData = new WaystoneData(key, config.getLocation("Waystones." + key + ".location"), UUID.fromString(Objects.requireNonNull(config.getString("Waystones." + key + ".owner"))));
+                WaystoneData waystoneData = new WaystoneData(Integer.parseInt(key), config.getString("Waystones." + key + ".name"), config.getLocation("Waystones." + key + ".location"), UUID.fromString(Objects.requireNonNull(config.getString("Waystones." + key + ".owner"))));
                 QuickWaystones.getWaystonesMap().put(waystoneData.getLocation(), waystoneData);
+
+                if (waystoneData.getId() > lastComputedId) lastComputedId = waystoneData.getId();
             }
 
             for (String key : accessKeys) {
                 QuickWaystones.getPlayerAccess().put(UUID.fromString(key), new HashSet<>(Arrays.asList(Objects.requireNonNull(config.getIntegerList("Access." + key)).toArray(new Integer[0]))));
             }
+
+            return lastComputedId;
         } catch (InvalidConfigurationException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,8 +68,11 @@ public class DataManager {
         configOverwrite = new YamlConfiguration();
 
         for (WaystoneData waystone : waystones) {
-            configOverwrite.set("Waystones." + waystone.getName() + ".location", waystone.getLocation());
-            configOverwrite.set("Waystones." + waystone.getName() + ".owner", waystone.getOwner().toString());
+            System.out.println("Waystones." + waystone.getId() + ".name" + waystone.getName());
+
+            configOverwrite.set("Waystones." + waystone.getId() + ".name", waystone.getName());
+            configOverwrite.set("Waystones." + waystone.getId() + ".location", waystone.getLocation());
+            configOverwrite.set("Waystones." + waystone.getId() + ".owner", waystone.getOwner().toString());
         }
 
         for (Map.Entry<UUID, Set<Integer>> entry : playerAccess.entrySet()) {

@@ -30,6 +30,9 @@ public class OnBlockBreak implements Listener {
 
         if (player.isOp() || player.getUniqueId().equals(waystone.getOwner())) {
             QuickWaystones.removeWaystone(event.getBlock().getLocation());
+            QuickWaystones.removeAccess(waystone.getId());
+
+            QuickWaystones.saveData();
             return;
         }
 

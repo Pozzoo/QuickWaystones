@@ -17,8 +17,8 @@ public class WaystoneData {
         this.location = location;
         this.owner = owner;
     }
-    public WaystoneData(String name, Location location, UUID owner) {
-        id = QuickWaystones.getAndIncrementLastWaystoneID();
+    public WaystoneData(Integer id, String name, Location location, UUID owner) {
+        this.id = id;
         this.name = name;
         this.location = location;
         this.owner = owner;
