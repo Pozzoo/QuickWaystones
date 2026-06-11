@@ -69,6 +69,8 @@ public class OnPlayerInteract implements Listener {
 
             QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(location).getId());
 
+            QuickWaystones.saveData();
+
             return;
         }
 

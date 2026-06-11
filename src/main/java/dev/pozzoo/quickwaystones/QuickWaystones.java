@@ -36,7 +36,7 @@ public final class QuickWaystones extends JavaPlugin {
         new OnBlockBreak(plugin);
 
         dataManager = new DataManager();
-        dataManager.loadData();
+        lastWaystoneID = dataManager.loadData();
 
         waystonePass = new WaystonePass(plugin, "waystone_pass", "bound_waystone");
 
@@ -82,12 +82,16 @@ public final class QuickWaystones extends JavaPlugin {
 
     public static void removeWaystone(Location location) {
         waystonesMap.remove(location);
-        saveData();
+    }
+
+    public static void removeAccess(Integer waystoneId) {
+        for (UUID uuid : playerAccess.keySet()) {
+            playerAccess.get(uuid).remove(waystoneId);
+        }
     }
 
     public static void createWaystone(Location location, WaystoneData waystoneData) {
         waystonesMap.put(location, waystoneData);
-        saveData();
     }
 
     public static WaystoneData getWaystone(Location location) {
