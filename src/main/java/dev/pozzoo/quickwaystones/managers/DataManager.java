@@ -2,93 +2,190 @@ package dev.pozzoo.quickwaystones.managers;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
-import org.bukkit.configuration.InvalidConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
+import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.Logger;
-
-
 public class DataManager {
+
     private final Logger logger;
     private File file;
     private YamlConfiguration config;
-    private YamlConfiguration configOverwrite;
-    private Set<String> waystoneKeys;
-    private Set<String> accessKeys;
 
     public DataManager() {
         logger = QuickWaystones.getInstance().getLogger();
-        waystoneKeys = new HashSet<>();
-        accessKeys = new HashSet<>();
         checkFile();
     }
 
     private void checkFile() {
-        file = new File(QuickWaystones.getInstance().getDataFolder(), "waystones.yml");
+        file = new File(
+            QuickWaystones.getInstance().getDataFolder(),
+            "waystones.yml"
+        );
 
         if (!file.exists()) {
-            QuickWaystones.getInstance().getLogger().info("Creating waystones.yml");
+            QuickWaystones.getInstance()
+                .getLogger()
+                .info("Creating waystones.yml");
             QuickWaystones.getInstance().saveResource("waystones.yml", false);
         }
-
-        config = YamlConfiguration.loadConfiguration(file);
-        config.options().parseComments(true);
-
-        if (config.getKeys(true).isEmpty()) return;
-
-        waystoneKeys = Objects.requireNonNull(config.getConfigurationSection("Waystones.")).getKeys(false);
-        accessKeys = Objects.requireNonNull(config.getConfigurationSection("Access.")).getKeys(false);
     }
 
     public int loadData() {
-        try {
-            config.load(file);
-            int lastComputedId = 0;
+        config = YamlConfiguration.loadConfiguration(file);
+        config.options().parseComments(true);
 
-            for (String key : waystoneKeys) {
-                WaystoneData waystoneData = new WaystoneData(Integer.parseInt(key), config.getString("Waystones." + key + ".name"), config.getLocation("Waystones." + key + ".location"), UUID.fromString(Objects.requireNonNull(config.getString("Waystones." + key + ".owner"))), Integer.parseInt(Objects.requireNonNull(config.getString("Waystones." + key + ".direction"))));
-                QuickWaystones.getWaystonesMap().put(waystoneData.getLocation(), waystoneData);
-
-                if (waystoneData.getId() > lastComputedId) lastComputedId = waystoneData.getId();
-            }
-
-            for (String key : accessKeys) {
-                QuickWaystones.getPlayerAccess().put(UUID.fromString(key), new HashSet<>(Arrays.asList(Objects.requireNonNull(config.getIntegerList("Access." + key)).toArray(new Integer[0]))));
-            }
-
-            return lastComputedId;
-        } catch (InvalidConfigurationException | IOException e) {
-            throw new RuntimeException(e);
+        String pluginVersion = QuickWaystones.getInstance()
+            .getDescription()
+            .getVersion();
+        DataMigrator migration = new DataMigrator(logger, pluginVersion);
+        DataMigrator.MigrationResult result = migration.migrate(config);
+        if (result.migrated()) {
+            logger.info(
+                "Rewriting waystones.yml for plugin version " + pluginVersion
+            );
+            config = result.configuration();
+            saveCurrentConfig(config);
         }
+
+        QuickWaystones.getWaystonesMap().clear();
+        QuickWaystones.getPlayerAccess().clear();
+
+        int lastComputedId = 0;
+        ConfigurationSection waystonesSection = config.getConfigurationSection(
+            "Waystones"
+        );
+        if (waystonesSection != null) {
+            List<String> keys = new ArrayList<>(
+                waystonesSection.getKeys(false)
+            );
+            keys.sort(Comparator.comparingInt(Integer::parseInt));
+
+            for (String key : keys) {
+                String basePath = "Waystones." + key;
+                Location location = config.getLocation(basePath + ".location");
+                String ownerValue = config.getString(basePath + ".owner");
+                if (location == null || ownerValue == null) {
+                    logger.warning("Skipping invalid waystone entry: " + key);
+                    continue;
+                }
+
+                int id = Integer.parseInt(key);
+                WaystoneData waystoneData = new WaystoneData(
+                    id,
+                    config.getString(basePath + ".name", "Waystone " + id),
+                    location,
+                    UUID.fromString(ownerValue),
+                    config.getInt(basePath + ".direction", 0)
+                );
+                QuickWaystones.getWaystonesMap().put(
+                    waystoneData.getLocation(),
+                    waystoneData
+                );
+                QuickWaystones.getPlayerAccess()
+                    .computeIfAbsent(waystoneData.getOwner(), ignored ->
+                        new LinkedHashSet<>()
+                    )
+                    .add(waystoneData.getId());
+
+                if (waystoneData.getId() > lastComputedId) {
+                    lastComputedId = waystoneData.getId();
+                }
+            }
+        }
+
+        ConfigurationSection accessSection = config.getConfigurationSection(
+            "Access"
+        );
+        if (accessSection != null) {
+            for (String key : accessSection.getKeys(false)) {
+                UUID playerId = UUID.fromString(key);
+                Set<Integer> access =
+                    QuickWaystones.getPlayerAccess().computeIfAbsent(
+                        playerId,
+                        ignored -> new LinkedHashSet<>()
+                    );
+                access.addAll(config.getIntegerList("Access." + key));
+            }
+        }
+
+        return lastComputedId;
     }
 
-    public void saveData(Collection<WaystoneData> waystones, Map<UUID, Set<Integer>> playerAccess) {
-        configOverwrite = new YamlConfiguration();
+    public void saveData(
+        Iterable<WaystoneData> waystones,
+        Map<UUID, Set<Integer>> playerAccess
+    ) {
+        config = new YamlConfiguration();
+        config.set(
+            "PluginVersion",
+            QuickWaystones.getInstance().getDescription().getVersion()
+        );
 
-        for (WaystoneData waystone : waystones) {
-            configOverwrite.set("Waystones." + waystone.getId() + ".name", waystone.getName());
-            configOverwrite.set("Waystones." + waystone.getId() + ".location", waystone.getLocation());
-            configOverwrite.set("Waystones." + waystone.getId() + ".owner", waystone.getOwner().toString());
-            configOverwrite.set("Waystones." + waystone.getId() + ".direction", waystone.getDirection());
+        List<WaystoneData> orderedWaystones = new ArrayList<>();
+        waystones.forEach(orderedWaystones::add);
+        orderedWaystones.sort(Comparator.comparingInt(WaystoneData::getId));
+
+        for (WaystoneData waystone : orderedWaystones) {
+            String basePath = "Waystones." + waystone.getId();
+            config.set(basePath + ".name", waystone.getName());
+            config.set(basePath + ".location", waystone.getLocation());
+            config.set(basePath + ".owner", waystone.getOwner().toString());
+            config.set(basePath + ".direction", waystone.getDirection());
         }
 
-        for (Map.Entry<UUID, Set<Integer>> entry : playerAccess.entrySet()) {
-            configOverwrite.set("Access." + entry.getKey().toString(), entry.getValue().toArray(new Integer[0]));
-        }
+        playerAccess
+            .entrySet()
+            .stream()
+            .sorted(
+                Map.Entry.comparingByKey(Comparator.comparing(UUID::toString))
+            )
+            .forEach(entry ->
+                config.set(
+                    "Access." + entry.getKey(),
+                    entry
+                        .getValue()
+                        .stream()
+                        .sorted()
+                        .toArray(Integer[]::new)
+                )
+            );
 
         save();
+    }
+
+    private void saveCurrentConfig(YamlConfiguration configToSave) {
+        try {
+            QuickWaystones.getInstance().saveResource("waystones.yml", true);
+            configToSave.save(file);
+        } catch (IOException e) {
+            throw new RuntimeException(
+                "Failed to rewrite migrated waystones.yml",
+                e
+            );
+        }
     }
 
     public void save() {
         QuickWaystones.getInstance().saveResource("waystones.yml", true);
 
         try {
-            configOverwrite.save(file);
+            config.save(file);
         } catch (Exception e) {
             logger.severe("Failed to save waystones.yml: " + e.getMessage());
-            logger.severe("Stack trace: " + Arrays.toString(e.getStackTrace()));
+            logger.severe(
+                "Stack trace: " + java.util.Arrays.toString(e.getStackTrace())
+            );
         }
     }
 }
