@@ -7,16 +7,22 @@ import dev.pozzoo.quickwaystones.events.OnPlayerInteract;
 import dev.pozzoo.quickwaystones.items.WaystonePass;
 import dev.pozzoo.quickwaystones.managers.CraftManager;
 import dev.pozzoo.quickwaystones.managers.DataManager;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.OptionalInt;
+import java.util.Set;
+import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
-
 public final class QuickWaystones extends JavaPlugin {
+
     private static QuickWaystones plugin;
     private static DataManager dataManager;
-    private static final Map<Location, WaystoneData> waystonesMap = new HashMap<>();
+    private static final Map<Location, WaystoneData> waystonesMap =
+        new HashMap<>();
     private static final Map<UUID, Set<Integer>> playerAccess = new HashMap<>();
     private static int lastWaystoneID = 0;
     private static WaystonePass waystonePass;
@@ -38,11 +44,17 @@ public final class QuickWaystones extends JavaPlugin {
         dataManager = new DataManager();
         lastWaystoneID = dataManager.loadData();
 
-        waystonePass = new WaystonePass(plugin, "waystone_pass", "bound_waystone");
+        waystonePass = new WaystonePass(
+            plugin,
+            "waystone_pass",
+            "bound_waystone"
+        );
 
-        OptionalInt maxId = waystonesMap.values().stream()
-                .mapToInt(WaystoneData::getId)
-                .max();
+        OptionalInt maxId = waystonesMap
+            .values()
+            .stream()
+            .mapToInt(WaystoneData::getId)
+            .max();
 
         if (maxId.isPresent()) {
             lastWaystoneID = maxId.getAsInt();
@@ -85,12 +97,13 @@ public final class QuickWaystones extends JavaPlugin {
     }
 
     public static void removeAccess(Integer waystoneId) {
-        for (UUID uuid : playerAccess.keySet()) {
-            playerAccess.get(uuid).remove(waystoneId);
-        }
+        playerAccess.values().forEach(access -> access.remove(waystoneId));
     }
 
-    public static void createWaystone(Location location, WaystoneData waystoneData) {
+    public static void createWaystone(
+        Location location,
+        WaystoneData waystoneData
+    ) {
         waystonesMap.put(location, waystoneData);
     }
 
@@ -102,6 +115,10 @@ public final class QuickWaystones extends JavaPlugin {
         return playerAccess;
     }
 
+    public static Set<Integer> getOrCreatePlayerAccess(UUID uuid) {
+        return playerAccess.computeIfAbsent(uuid, ignored -> new HashSet<>());
+    }
+
     public static WaystonePass getWaystonePass() {
         return waystonePass;
     }
@@ -111,10 +128,15 @@ public final class QuickWaystones extends JavaPlugin {
     }
 
     public static boolean existsInMap(Location location) {
-        return waystonesMap.keySet().stream()
-                .anyMatch(l -> l.getWorld().equals(location.getWorld())
-                        && l.getBlockX() == location.getBlockX()
-                        && l.getBlockY() == location.getBlockY()
-                        && l.getBlockZ() == location.getBlockZ());
+        return waystonesMap
+            .keySet()
+            .stream()
+            .anyMatch(
+                l ->
+                    l.getWorld().equals(location.getWorld()) &&
+                    l.getBlockX() == location.getBlockX() &&
+                    l.getBlockY() == location.getBlockY() &&
+                    l.getBlockZ() == location.getBlockZ()
+            );
     }
 }
