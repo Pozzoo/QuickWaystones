@@ -10,6 +10,7 @@ public class WaystoneData {
     private String name;
     private final UUID owner;
     private final Location location;
+    private int direction = 0;
 
     public WaystoneData(Location location, UUID owner) {
         id = QuickWaystones.getAndIncrementLastWaystoneID();
@@ -17,11 +18,12 @@ public class WaystoneData {
         this.location = location;
         this.owner = owner;
     }
-    public WaystoneData(Integer id, String name, Location location, UUID owner) {
+    public WaystoneData(Integer id, String name, Location location, UUID owner, int direction) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.owner = owner;
+        this.direction = direction;
     }
 
     public int getId() {
@@ -44,6 +46,14 @@ public class WaystoneData {
         return location;
     }
 
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
     @Override
     public String toString() {
         return "WaystoneData{" +
@@ -51,6 +61,7 @@ public class WaystoneData {
                 ", name='" + name + '\'' +
                 ", location=" + location +
                 ", owner='" + owner + '\'' +
+                ", direction=" + direction +
                 '}';
     }
 }

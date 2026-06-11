@@ -2,6 +2,7 @@ package dev.pozzoo.quickwaystones.events;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
+import dev.pozzoo.quickwaystones.gui.DirectionGUI;
 import dev.pozzoo.quickwaystones.gui.WaystoneGUI;
 import dev.pozzoo.quickwaystones.utils.StringUtils;
 import net.kyori.adventure.text.TextComponent;
@@ -62,7 +63,7 @@ public class OnPlayerInteract implements Listener {
 
         QuickWaystones.getPlayerAccess().computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
 
-        if (!QuickWaystones.getWaystonesMap().containsKey(location)) {
+        if (!QuickWaystones.existsInMap(location)) {
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
             QuickWaystones.createWaystone(location, new WaystoneData(location, player.getUniqueId()));
@@ -75,6 +76,11 @@ public class OnPlayerInteract implements Listener {
         }
 
         if (event.getItem() != null) {
+            if (event.getItem().getType() == Material.COMPASS) {
+                DirectionGUI.runGUI(player, QuickWaystones.getWaystonesMap().get(location));
+                return;
+            }
+
             if (event.getItem().getType() == Material.NAME_TAG) {
                 TextComponent textComponent = (TextComponent) event.getItem().getItemMeta().displayName();
 

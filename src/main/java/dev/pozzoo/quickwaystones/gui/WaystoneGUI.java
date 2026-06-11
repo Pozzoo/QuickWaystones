@@ -178,8 +178,11 @@ public class WaystoneGUI implements Listener {
 
                 player.setLevel(player.getLevel() - xpCost);
             }
-            
-            player.teleport(ws.getLocation().clone().add(0.5, 1, 0.5));
+
+            Location teleportLocation = ws.getLocation().clone().add(0.5, 1, 0.5);
+            teleportLocation.setYaw(ws.getDirection());
+
+            player.teleport(teleportLocation);
             player.getWorld().spawnParticle(Particle.PORTAL, player.getLocation(), 5);
             player.playSound(player, Sound.ENTITY_FOX_TELEPORT, 0.5f, 1f);
             player.closeInventory();

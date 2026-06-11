@@ -109,4 +109,12 @@ public final class QuickWaystones extends JavaPlugin {
     public static void saveData() {
         dataManager.saveData(waystonesMap.values(), playerAccess);
     }
+
+    public static boolean existsInMap(Location location) {
+        return waystonesMap.keySet().stream()
+                .anyMatch(l -> l.getWorld().equals(location.getWorld())
+                        && l.getBlockX() == location.getBlockX()
+                        && l.getBlockY() == location.getBlockY()
+                        && l.getBlockZ() == location.getBlockZ());
+    }
 }
