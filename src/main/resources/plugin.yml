@@ -1,6 +1,6 @@
 name: QuickWaystones
-version: '2.1.0'
-main: fun.pozzoo.quickwaystones.QuickWaystones
+version: '2.2.0'
+main: dev.pozzoo.quickwaystones.QuickWaystones
 api-version: '1.20'
 
 commands:

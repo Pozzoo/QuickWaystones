@@ -10,3 +10,7 @@ Messages:
   WaystonePassBound: "WaystonePass bound to"
   InsufficientXp: "You need {xp} XP level(s) to use this waystone!"
   SameWaystone: "You cannot teleport to the same waystone!"
+  SetWaystoneNorth: "Set To Spawn North"
+  SetWaystoneSouth: "Set To Spawn South"
+  SetWaystoneEast: "Set To Spawn East"
+  SetWaystoneWest: "Set To Spawn West"

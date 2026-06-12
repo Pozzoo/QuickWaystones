@@ -1,8 +1,8 @@
-package fun.pozzoo.quickwaystones.events;
+package dev.pozzoo.quickwaystones.events;
 
-import fun.pozzoo.quickwaystones.QuickWaystones;
-import fun.pozzoo.quickwaystones.data.WaystoneData;
-import fun.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.QuickWaystones;
+import dev.pozzoo.quickwaystones.data.WaystoneData;
+import dev.pozzoo.quickwaystones.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,6 +30,9 @@ public class OnBlockBreak implements Listener {
 
         if (player.isOp() || player.getUniqueId().equals(waystone.getOwner())) {
             QuickWaystones.removeWaystone(event.getBlock().getLocation());
+            QuickWaystones.removeAccess(waystone.getId());
+
+            QuickWaystones.saveData();
             return;
         }
 

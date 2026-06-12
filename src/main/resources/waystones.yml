@@ -1,3 +1,4 @@
+PluginVersion: ${project.version}
 Waystones:
 
 Access:
