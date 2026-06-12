@@ -33,6 +33,8 @@ public final class QuickWaystones extends JavaPlugin {
         // Plugin startup logic
         plugin = this;
 
+        new UpdateChecker(this, "Pozzoo", "QuickWaystones", "quickwaystones.updatenotify", "quickwaystones");
+
         saveDefaultConfig();
 
         CraftManager craftManager = new CraftManager();
