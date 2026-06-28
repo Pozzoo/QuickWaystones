@@ -2,6 +2,7 @@ package dev.pozzoo.quickwaystones.data;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ public class WaystoneData {
     private final UUID owner;
     private final Location location;
     private int direction = 0;
+    private Material icon = Material.ENDER_PEARL;
 
     public WaystoneData(Location location, UUID owner) {
         id = QuickWaystones.getAndIncrementLastWaystoneID();
@@ -18,12 +20,13 @@ public class WaystoneData {
         this.location = location;
         this.owner = owner;
     }
-    public WaystoneData(Integer id, String name, Location location, UUID owner, int direction) {
+    public WaystoneData(Integer id, String name, Location location, UUID owner, int direction, Material icon) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.owner = owner;
         this.direction = direction;
+        this.icon = icon;
     }
 
     public int getId() {
@@ -52,6 +55,14 @@ public class WaystoneData {
 
     public void setDirection(int direction) {
         this.direction = direction;
+    }
+
+    public Material getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Material icon) {
+        this.icon = icon;
     }
 
     @Override
