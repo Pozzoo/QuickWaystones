@@ -7,8 +7,10 @@ import dev.pozzoo.quickwaystones.events.OnPlayerInteract;
 import dev.pozzoo.quickwaystones.items.WaystonePass;
 import dev.pozzoo.quickwaystones.managers.CraftManager;
 import dev.pozzoo.quickwaystones.managers.DataManager;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Set;
@@ -24,6 +26,7 @@ public final class QuickWaystones extends JavaPlugin {
     private static final Map<Location, WaystoneData> waystonesMap =
         new HashMap<>();
     private static final Map<UUID, Set<Integer>> playerAccess = new HashMap<>();
+    private static final Map<UUID, List<Integer>> playerWaystoneOrder = new HashMap<>();
     private static int lastWaystoneID = 0;
     private static WaystonePass waystonePass;
     private static Metrics metrics;
@@ -121,12 +124,16 @@ public final class QuickWaystones extends JavaPlugin {
         return playerAccess.computeIfAbsent(uuid, ignored -> new HashSet<>());
     }
 
+    public static Map<UUID, List<Integer>> getPlayerWaystoneOrder() {
+        return playerWaystoneOrder;
+    }
+
     public static WaystonePass getWaystonePass() {
         return waystonePass;
     }
 
     public static void saveData() {
-        dataManager.saveData(waystonesMap.values(), playerAccess);
+        dataManager.saveData(waystonesMap.values(), playerAccess, playerWaystoneOrder);
     }
 
     public static boolean existsInMap(Location location) {
