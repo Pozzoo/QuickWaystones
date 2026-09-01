@@ -96,7 +96,7 @@ public class WaystoneGUI implements Listener {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.displayName(StringUtils.formatItemName(ws.getName()));
-                if (selectedId != null && selectedId.intValue() == ws.getId()) {
+                if (selectedId != null && selectedId == ws.getId()) {
                     applyGlint(meta);
                 }
                 item.setItemMeta(meta);
@@ -228,7 +228,7 @@ public class WaystoneGUI implements Listener {
         WaystoneData ws = holder.slotToWaystone.get(slot);
         if (ws != null) {
             ItemStack cursor = event.getCursor();
-            if (cursor != null && cursor.getType() != Material.AIR) {
+            if (cursor.getType() != Material.AIR) {
                 ws.setIcon(cursor.getType());
                 QuickWaystones.saveData();
                 String message = QuickWaystones.getInstance().getConfig().getString("Messages.WaystoneIconChanged", "Waystone icon changed!");
@@ -244,7 +244,7 @@ public class WaystoneGUI implements Listener {
                 if (selected == null) {
                     firstSelections.put(playerId, ws.getId());
                     player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.0f);
-                } else if (selected.intValue() == ws.getId()) {
+                } else if (selected == ws.getId()) {
                     firstSelections.remove(playerId);
                     player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.0f);
                 } else {
@@ -304,7 +304,9 @@ public class WaystoneGUI implements Listener {
         if (affectsGui) {
             event.setCancelled(true);
         }
-      
+    }
+
+    @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (!(event.getInventory().getHolder() instanceof WaystoneHolder)) {
             return;
