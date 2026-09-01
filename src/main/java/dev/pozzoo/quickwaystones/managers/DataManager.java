@@ -3,6 +3,7 @@ package dev.pozzoo.quickwaystones.managers;
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
 import java.io.File;
+import org.bukkit.Material;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -82,12 +83,20 @@ public class DataManager {
                 }
 
                 int id = Integer.parseInt(key);
+                String iconName = config.getString(basePath + ".icon", "ENDER_PEARL");
+                Material icon;
+                try {
+                    icon = Material.valueOf(iconName);
+                } catch (IllegalArgumentException e) {
+                    icon = Material.ENDER_PEARL;
+                }
                 WaystoneData waystoneData = new WaystoneData(
                     id,
                     config.getString(basePath + ".name", "Waystone " + id),
                     location,
                     UUID.fromString(ownerValue),
-                    config.getInt(basePath + ".direction", 0)
+                    config.getInt(basePath + ".direction", 0),
+                    icon
                 );
                 QuickWaystones.getWaystonesMap().put(
                     waystoneData.getLocation(),
@@ -153,6 +162,7 @@ public class DataManager {
             config.set(basePath + ".location", waystone.getLocation());
             config.set(basePath + ".owner", waystone.getOwner().toString());
             config.set(basePath + ".direction", waystone.getDirection());
+            config.set(basePath + ".icon", waystone.getIcon().name());
         }
 
         playerAccess

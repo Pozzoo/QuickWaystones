@@ -14,3 +14,4 @@ Messages:
   SetWaystoneSouth: "Set To Spawn South"
   SetWaystoneEast: "Set To Spawn East"
   SetWaystoneWest: "Set To Spawn West"
+  WaystoneIconChanged: "Waystone icon changed!"

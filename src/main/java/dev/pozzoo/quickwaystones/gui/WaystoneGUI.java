@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
@@ -91,7 +92,7 @@ public class WaystoneGUI implements Listener {
         int slot = 0;
         for (int i = startIndex; i < endIndex; i++) {
             WaystoneData ws = waystones.get(i);
-            ItemStack item = new ItemStack(Material.ENDER_PEARL);
+            ItemStack item = new ItemStack(ws.getIcon());
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.displayName(StringUtils.formatItemName(ws.getName()));
@@ -184,7 +185,6 @@ public class WaystoneGUI implements Listener {
         if (!(event.getInventory().getHolder() instanceof WaystoneHolder holder)) {
             return;
         }
-        event.setCancelled(true);
 
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
@@ -193,8 +193,12 @@ public class WaystoneGUI implements Listener {
         int slot = event.getRawSlot();
         // Only handle clicks inside the top inventory
         if (slot < 0 || slot >= INVENTORY_SIZE) {
+            if (event.isShiftClick()) {
+                event.setCancelled(true);
+            }
             return;
         }
+        event.setCancelled(true);
 
         // Pagination
         if (slot == PREV_SLOT && holder.page > 0) {
@@ -223,6 +227,17 @@ public class WaystoneGUI implements Listener {
         // Waystone teleport
         WaystoneData ws = holder.slotToWaystone.get(slot);
         if (ws != null) {
+            ItemStack cursor = event.getCursor();
+            if (cursor != null && cursor.getType() != Material.AIR) {
+                ws.setIcon(cursor.getType());
+                QuickWaystones.saveData();
+                String message = QuickWaystones.getInstance().getConfig().getString("Messages.WaystoneIconChanged", "Waystone icon changed!");
+                player.sendMessage(StringUtils.formatString("<green>" + message));
+                player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.5f);
+                openPage(player, holder.page, holder.waystoneData);
+                return;
+            }
+          
             UUID playerId = player.getUniqueId();
             if (reorderingPlayers.contains(playerId)) {
                 Integer selected = firstSelections.get(playerId);
@@ -281,6 +296,15 @@ public class WaystoneGUI implements Listener {
     }
 
     @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (!(event.getInventory().getHolder() instanceof WaystoneHolder)) {
+            return;
+        }
+        boolean affectsGui = event.getRawSlots().stream().anyMatch(slot -> slot < INVENTORY_SIZE);
+        if (affectsGui) {
+            event.setCancelled(true);
+        }
+      
     public void onInventoryClose(InventoryCloseEvent event) {
         if (!(event.getInventory().getHolder() instanceof WaystoneHolder)) {
             return;
