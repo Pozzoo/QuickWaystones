@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -128,12 +129,22 @@ public class DataManager {
             }
         }
 
+        ConfigurationSection orderSection = config.getConfigurationSection("Order");
+        if (orderSection != null) {
+            for (String key : orderSection.getKeys(false)) {
+                UUID playerId = UUID.fromString(key);
+                List<Integer> order = new ArrayList<>(config.getIntegerList("Order." + key));
+                QuickWaystones.getPlayerWaystoneOrder().put(playerId, order);
+            }
+        }
+
         return lastComputedId;
     }
 
     public void saveData(
         Iterable<WaystoneData> waystones,
-        Map<UUID, Set<Integer>> playerAccess
+        Map<UUID, Set<Integer>> playerAccess,
+        Map<UUID, List<Integer>> playerWaystoneOrder
     ) {
         config = new YamlConfiguration();
         config.set(
@@ -168,6 +179,19 @@ public class DataManager {
                         .stream()
                         .sorted()
                         .toArray(Integer[]::new)
+                )
+            );
+
+        playerWaystoneOrder
+            .entrySet()
+            .stream()
+            .sorted(
+                Map.Entry.comparingByKey(Comparator.comparing(UUID::toString))
+            )
+            .forEach(entry ->
+                config.set(
+                    "Order." + entry.getKey(),
+                    entry.getValue().stream().collect(Collectors.toList())
                 )
             );
 
