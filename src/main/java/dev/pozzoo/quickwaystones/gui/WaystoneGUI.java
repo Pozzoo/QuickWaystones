@@ -9,13 +9,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WaystoneGUI implements Listener {
 
@@ -25,8 +29,12 @@ public class WaystoneGUI implements Listener {
     private static final int PREV_SLOT = 27 + (3 - 1); // 29
     private static final int NEXT_SLOT = 27 + (7 - 1); // 33
     private static final int PAGE_SLOT = 27 + (5 - 1); // 31
+    private static final int REORDER_SLOT = 27 + (9 - 1); // 35
 
     private static volatile boolean registered = false;
+    private static final Set<UUID> reorderingPlayers = new HashSet<>();
+    private static final Map<UUID, Integer> firstSelections = new HashMap<>();
+    private static final Set<UUID> reopeningPlayers = new HashSet<>();
 
     public static void runGUI(Player player, WaystoneData waystoneData) {
         ensureRegistered();
@@ -56,6 +64,17 @@ public class WaystoneGUI implements Listener {
 
         List<WaystoneData> waystones = new ArrayList<>(waystonesMap.values());
 
+        List<Integer> playerOrder = QuickWaystones.getPlayerWaystoneOrder().get(player.getUniqueId());
+        if (playerOrder != null && !playerOrder.isEmpty()) {
+            Map<Integer, Integer> orderIndex = new HashMap<>();
+            for (int i = 0; i < playerOrder.size(); i++) {
+                orderIndex.put(playerOrder.get(i), i);
+            }
+            waystones.sort(Comparator.comparingInt(ws -> orderIndex.getOrDefault(ws.getId(), Integer.MAX_VALUE)));
+        } else {
+            waystones.sort(Comparator.comparingInt(WaystoneData::getId));
+        }
+
         int totalItems = waystones.size();
         int totalPages = Math.max(1, (int) Math.ceil(totalItems / (double) PAGE_SIZE));
         int currentPage = Math.max(0, Math.min(page, totalPages - 1));
@@ -68,6 +87,7 @@ public class WaystoneGUI implements Listener {
         // Fill page items (top 27 slots)
         int startIndex = currentPage * PAGE_SIZE;
         int endIndex = Math.min(startIndex + PAGE_SIZE, totalItems);
+        Integer selectedId = firstSelections.get(player.getUniqueId());
         int slot = 0;
         for (int i = startIndex; i < endIndex; i++) {
             WaystoneData ws = waystones.get(i);
@@ -75,6 +95,9 @@ public class WaystoneGUI implements Listener {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.displayName(StringUtils.formatItemName(ws.getName()));
+                if (selectedId != null && selectedId.intValue() == ws.getId()) {
+                    applyGlint(meta);
+                }
                 item.setItemMeta(meta);
             }
             inv.setItem(slot, item);
@@ -97,7 +120,35 @@ public class WaystoneGUI implements Listener {
             }
         }
 
+        // Reorder button
+        boolean reordering = reorderingPlayers.contains(player.getUniqueId());
+        ItemStack reorderBtn = new ItemStack(Material.CRAFTING_TABLE);
+        ItemMeta btnMeta = reorderBtn.getItemMeta();
+        if (btnMeta != null) {
+            if (reordering) {
+                btnMeta.displayName(StringUtils.formatString("<green>Reordering"));
+                applyGlint(btnMeta);
+            } else {
+                btnMeta.displayName(StringUtils.formatString("Reorder"));
+            }
+            reorderBtn.setItemMeta(btnMeta);
+        }
+        inv.setItem(REORDER_SLOT, reorderBtn);
+
+        reopeningPlayers.add(player.getUniqueId());
         player.openInventory(inv);
+    }
+
+    private static void applyGlint(ItemMeta meta) {
+        try {
+            meta.setEnchantmentGlintOverride(true);
+        } catch (NoSuchMethodError ignored) {
+            Enchantment unbreaking = Registry.ENCHANTMENT.get(NamespacedKey.minecraft("unbreaking"));
+            if (unbreaking != null) {
+                meta.addEnchant(unbreaking, 1, true);
+            }
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
     }
 
     private static ItemStack named(Component name) {
@@ -155,9 +206,49 @@ public class WaystoneGUI implements Listener {
             return;
         }
 
+        // Reorder button
+        if (slot == REORDER_SLOT) {
+            UUID playerId = player.getUniqueId();
+            if (reorderingPlayers.contains(playerId)) {
+                reorderingPlayers.remove(playerId);
+                firstSelections.remove(playerId);
+            } else {
+                reorderingPlayers.add(playerId);
+            }
+            player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.5f);
+            openPage(player, holder.page, holder.waystoneData);
+            return;
+        }
+
         // Waystone teleport
         WaystoneData ws = holder.slotToWaystone.get(slot);
         if (ws != null) {
+            UUID playerId = player.getUniqueId();
+            if (reorderingPlayers.contains(playerId)) {
+                Integer selected = firstSelections.get(playerId);
+                if (selected == null) {
+                    firstSelections.put(playerId, ws.getId());
+                    player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.0f);
+                } else if (selected.intValue() == ws.getId()) {
+                    firstSelections.remove(playerId);
+                    player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.0f);
+                } else {
+                    List<Integer> order = QuickWaystones.getPlayerWaystoneOrder()
+                        .computeIfAbsent(playerId, ignored -> QuickWaystones.getPlayerAccess()
+                            .getOrDefault(playerId, new HashSet<>())
+                            .stream().sorted()
+                            .collect(Collectors.toCollection(ArrayList::new)));
+                    if (!order.contains(selected)) order.add(selected);
+                    if (!order.contains(ws.getId())) order.add(ws.getId());
+                    Collections.swap(order, order.indexOf(selected), order.indexOf(ws.getId()));
+                    QuickWaystones.saveData();
+                    firstSelections.remove(playerId);
+                    player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.5f);
+                }
+                openPage(player, holder.page, holder.waystoneData);
+                return;
+            }
+
             if (ws.getId() == holder.waystoneData.getId()) {
                 String message = QuickWaystones.getInstance().getConfig().getString("Messages.SameWaystone", "You cannot teleport to the same waystone!");
                 player.sendMessage(StringUtils.formatString("<red>" + message));
@@ -187,5 +278,18 @@ public class WaystoneGUI implements Listener {
             player.playSound(player, Sound.ENTITY_FOX_TELEPORT, 0.5f, 1f);
             player.closeInventory();
         }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if (!(event.getInventory().getHolder() instanceof WaystoneHolder)) {
+            return;
+        }
+        UUID playerId = event.getPlayer().getUniqueId();
+        if (reopeningPlayers.remove(playerId)) {
+            return;
+        }
+        reorderingPlayers.remove(playerId);
+        firstSelections.remove(playerId);
     }
 }
