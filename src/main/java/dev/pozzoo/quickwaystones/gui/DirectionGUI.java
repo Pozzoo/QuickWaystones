@@ -2,9 +2,11 @@ package dev.pozzoo.quickwaystones.gui;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
+import dev.pozzoo.quickwaystones.utils.EnchantmentUtils;
 import dev.pozzoo.quickwaystones.utils.StringUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,8 +15,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.CompassMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,11 +56,34 @@ public class DirectionGUI implements Listener {
             inv.setItem(i, filler);
         }
 
+        Location loc = player.getLocation();
+        Vector dir = loc.getDirection().setY(0).normalize();
+
+        Location front = loc.clone().add(dir.clone().multiply(1000));
+        Location back  = loc.clone().add(dir.clone().multiply(-1000));
+        Vector rightDir = new Vector(-dir.getZ(), 0, dir.getX()); // rotate 90° CW
+        Location right = loc.clone().add(rightDir.clone().multiply(1000));
+        Location left  = loc.clone().add(rightDir.clone().multiply(-1000));
+
         ItemStack item = named(Material.COMPASS, Component.text("North"));
+        CompassMeta meta = (CompassMeta) item.getItemMeta();
+
+        meta.setLodestoneTracked(false);
+        meta.setLodestone(front);
+        EnchantmentUtils.applyGlint(meta, waystoneData.getDirection() == 180);
+
+        item.setItemMeta(meta);
         inv.setItem(4, item);
         holder.slotToIndex.put(4, 1);
 
         item = named(Material.COMPASS, Component.text("West"));
+        meta = (CompassMeta) item.getItemMeta();
+
+        meta.setLodestoneTracked(false);
+        meta.setLodestone(left);
+        EnchantmentUtils.applyGlint(meta, waystoneData.getDirection() == 90);
+
+        item.setItemMeta(meta);
         inv.setItem(12, item);
         holder.slotToIndex.put(12, 2);
 
@@ -65,12 +92,27 @@ public class DirectionGUI implements Listener {
         holder.slotToIndex.put(13, 3);
 
         item = named(Material.COMPASS, Component.text("East"));
+        meta = (CompassMeta) item.getItemMeta();
+
+        meta.setLodestoneTracked(false);
+        meta.setLodestone(right);
+        EnchantmentUtils.applyGlint(meta, waystoneData.getDirection() == -90);
+
+        item.setItemMeta(meta);
         inv.setItem(14, item);
         holder.slotToIndex.put(14, 4);
 
         item = named(Material.COMPASS, Component.text("South"));
+        meta = (CompassMeta) item.getItemMeta();
+
+        meta.setLodestoneTracked(false);
+        meta.setLodestone(back);
+        EnchantmentUtils.applyGlint(meta, waystoneData.getDirection() == 0);
+
+        item.setItemMeta(meta);
         inv.setItem(22, item);
         holder.slotToIndex.put(22, 5);
+
 
         player.openInventory(inv);
     }
