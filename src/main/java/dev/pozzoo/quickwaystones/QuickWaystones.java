@@ -3,11 +3,11 @@ package dev.pozzoo.quickwaystones;
 import dev.pozzoo.quickwaystones.commands.MainCommand;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
 import dev.pozzoo.quickwaystones.events.OnBlockBreak;
+import dev.pozzoo.quickwaystones.events.OnConsume;
 import dev.pozzoo.quickwaystones.events.OnPlayerInteract;
 import dev.pozzoo.quickwaystones.items.WaystonePass;
 import dev.pozzoo.quickwaystones.managers.CraftManager;
 import dev.pozzoo.quickwaystones.managers.DataManager;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.UUID;
+
+import dev.pozzoo.quickwaystones.managers.PotionManager;
 import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,8 +45,12 @@ public final class QuickWaystones extends JavaPlugin {
         CraftManager craftManager = new CraftManager();
         craftManager.registerRecipes();
 
+        PotionManager potionManager = new PotionManager(plugin);
+        potionManager.registerPotion();
+
         new OnPlayerInteract(plugin);
         new OnBlockBreak(plugin);
+        new OnConsume(plugin);
 
         dataManager = new DataManager();
         lastWaystoneID = dataManager.loadData();
@@ -115,6 +121,17 @@ public final class QuickWaystones extends JavaPlugin {
     public static WaystoneData getWaystone(Location location) {
         return waystonesMap.get(location);
     }
+
+    public static WaystoneData getWaystone(int id) {
+        for (Map.Entry<Location, WaystoneData> entry : waystonesMap.entrySet()) {
+            if (entry.getValue().getId() == id) {
+                return entry.getValue();
+            }
+        }
+
+        return null;
+    }
+
 
     public static Map<UUID, Set<Integer>> getPlayerAccess() {
         return playerAccess;

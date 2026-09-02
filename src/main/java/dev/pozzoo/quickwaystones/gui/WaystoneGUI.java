@@ -224,7 +224,7 @@ public class WaystoneGUI implements Listener {
             return;
         }
 
-        // Waystone teleport
+        // Waystone interact
         WaystoneData ws = holder.slotToWaystone.get(slot);
         if (ws != null) {
             ItemStack cursor = event.getCursor();
@@ -264,6 +264,7 @@ public class WaystoneGUI implements Listener {
                 return;
             }
 
+            // Waystone teleport
             if (ws.getId() == holder.waystoneData.getId()) {
                 String message = QuickWaystones.getInstance().getConfig().getString("Messages.SameWaystone", "You cannot teleport to the same waystone!");
                 player.sendMessage(StringUtils.formatString("<red>" + message));
