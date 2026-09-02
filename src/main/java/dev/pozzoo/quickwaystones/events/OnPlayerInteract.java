@@ -126,6 +126,8 @@ public class OnPlayerInteract implements Listener {
 
                 if (state != null && !state.equals("undrinkable")) return;
 
+                if (!Utils.consumePlayerXp(player)) return;
+
                 player.getInventory().setItemInMainHand(PotionManager.getActivePotion(QuickWaystones.getWaystone(location), plugin, key));
                 player.playSound(player, Sound.BLOCK_BEACON_POWER_SELECT, 1, 1);
 

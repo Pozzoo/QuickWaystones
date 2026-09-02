@@ -260,19 +260,7 @@ public class WaystoneGUI implements Listener {
                 return;
             }
 
-            int xpCost = QuickWaystones.getInstance().getConfig().getInt("Settings.XpCost", 5);
-
-            if (player.getGameMode().equals(GameMode.SURVIVAL)) {
-                if (player.getLevel() < xpCost) {
-                    String message = QuickWaystones.getInstance().getConfig().getString("Messages.InsufficientXp", "You need {xp} XP level(s) to use this waystone!");
-                    message = message.replace("{xp}", String.valueOf(xpCost));
-                    player.sendMessage(Utils.formatString("<red>" + message));
-                    player.playSound(player, Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.1f, 1);
-                    return;
-                }
-
-                player.setLevel(player.getLevel() - xpCost);
-            }
+            if (!Utils.consumePlayerXp(player)) return;
 
             Location teleportLocation = ws.getLocation().clone().add(0.5, 1, 0.5);
             teleportLocation.setYaw(ws.getDirection());
