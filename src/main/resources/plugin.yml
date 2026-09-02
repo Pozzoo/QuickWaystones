@@ -1,5 +1,5 @@
 name: QuickWaystones
-version: '2.2.0'
+version: '2.3.0'
 main: dev.pozzoo.quickwaystones.QuickWaystones
 api-version: '1.20'
 
