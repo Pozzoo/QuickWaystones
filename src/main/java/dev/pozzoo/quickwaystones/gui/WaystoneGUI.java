@@ -11,16 +11,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static dev.pozzoo.quickwaystones.utils.EnchantmentUtils.applyGlint;
 
 public class WaystoneGUI implements Listener {
 
@@ -138,18 +138,6 @@ public class WaystoneGUI implements Listener {
 
         reopeningPlayers.add(player.getUniqueId());
         player.openInventory(inv);
-    }
-
-    private static void applyGlint(ItemMeta meta) {
-        try {
-            meta.setEnchantmentGlintOverride(true);
-        } catch (NoSuchMethodError ignored) {
-            Enchantment unbreaking = Registry.ENCHANTMENT.get(NamespacedKey.minecraft("unbreaking"));
-            if (unbreaking != null) {
-                meta.addEnchant(unbreaking, 1, true);
-            }
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
     }
 
     private static ItemStack named(Component name) {

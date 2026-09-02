@@ -7,8 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -20,7 +18,7 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.pozzoo.quickwaystones.utils.EnchantmentUtils.getInfinityEnchant;
+import static dev.pozzoo.quickwaystones.utils.EnchantmentUtils.applyGlint;
 
 public class PotionManager {
 
@@ -76,12 +74,7 @@ public class PotionManager {
         meta.customName(StringUtils.formatItemName((plugin.getConfig().getString("Messages.LinkedTeleportationPotion"))));
         meta.lore(StringUtils.formatStringList(lore));
 
-        Enchantment infinity = getInfinityEnchant();
-        if (infinity != null) {
-            meta.addEnchant(infinity, 5, true);
-        }
-
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        applyGlint(meta);
 
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "potion_waystone_id"), PersistentDataType.INTEGER, waystone.getId());
 

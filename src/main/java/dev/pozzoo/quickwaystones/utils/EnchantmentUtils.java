@@ -3,22 +3,20 @@ package dev.pozzoo.quickwaystones.utils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.meta.ItemMeta;
 
 @SuppressWarnings("deprecation")
 public class EnchantmentUtils {
-    public static Enchantment getInfinityEnchant() {
+    public static void applyGlint(ItemMeta meta) {
         try {
-            // 1.20.3+
-            return Registry.ENCHANTMENT.get(
-                    NamespacedKey.minecraft("infinity")
-            );
-        } catch (NoClassDefFoundError ignored) {
-            // 1.20.0–1.20.2 fallback
-            return Enchantment.getByKey(
-                    NamespacedKey.minecraft("arrow_infinite")
-            );
+            meta.setEnchantmentGlintOverride(true);
+        } catch (NoSuchMethodError ignored) {
+            Enchantment unbreaking = Registry.ENCHANTMENT.get(NamespacedKey.minecraft("unbreaking"));
+            if (unbreaking != null) {
+                meta.addEnchant(unbreaking, 1, true);
+            }
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
     }
-
-
 }
