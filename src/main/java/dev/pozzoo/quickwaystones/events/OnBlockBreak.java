@@ -2,7 +2,7 @@ package dev.pozzoo.quickwaystones.events;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
-import dev.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -37,6 +37,6 @@ public class OnBlockBreak implements Listener {
         }
 
         event.setCancelled(true);
-        player.sendMessage(StringUtils.formatString("<Red>" + this.plugin.getConfig().getString("Messages.WaystoneBrokenByOther")));
+        player.sendMessage(Utils.formatString("<Red>" + this.plugin.getConfig().getString("Messages.WaystoneBrokenByOther")));
     }
 }

@@ -5,7 +5,7 @@ import dev.pozzoo.quickwaystones.data.WaystoneData;
 import dev.pozzoo.quickwaystones.gui.DirectionGUI;
 import dev.pozzoo.quickwaystones.gui.WaystoneGUI;
 import dev.pozzoo.quickwaystones.managers.PotionManager;
-import dev.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.utils.Utils;
 import java.util.HashMap;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.*;
@@ -55,12 +55,12 @@ public class OnPlayerInteract implements Listener {
                     0.1f,
                     1
                 );
-                player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneAlreadyDiscovered")));
+                player.sendMessage(Utils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneAlreadyDiscovered")));
                 return;
             }
 
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-            player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneDiscovered")));
+            player.sendMessage(Utils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneDiscovered")));
             QuickWaystones.getOrCreatePlayerAccess(player.getUniqueId()).add(
                 waystoneID
             );
@@ -81,7 +81,7 @@ public class OnPlayerInteract implements Listener {
 
         if (!QuickWaystones.existsInMap(location)) {
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-            player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
+            player.sendMessage(Utils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
             QuickWaystones.createWaystone(
                 location,
                 new WaystoneData(location, player.getUniqueId())
@@ -131,7 +131,7 @@ public class OnPlayerInteract implements Listener {
 
                 String message = QuickWaystones.getInstance().getConfig().getString("Messages.TeleportationPotionActivated", "Potion was linked to {waystone}!");
                 message = message.replace("{waystone}", QuickWaystones.getWaystone(location).getName());
-                player.sendMessage(StringUtils.formatString("<gold>" + message));
+                player.sendMessage(Utils.formatString("<gold>" + message));
 
                 return;
             }
@@ -142,7 +142,7 @@ public class OnPlayerInteract implements Listener {
                 HashMap<Integer, ItemStack> toDrop = player.getInventory().addItem(QuickWaystones.getWaystonePass().createItem(waystone.getId()));
 
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystonePassBound") + " " + waystone.getName()));
+                player.sendMessage(Utils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystonePassBound") + " " + waystone.getName()));
 
                 toDrop.forEach((integer, itemStack) ->
                     player.dropItem(itemStack)
@@ -154,7 +154,7 @@ public class OnPlayerInteract implements Listener {
         if (this.plugin.getConfig().getBoolean("Settings.HideUndiscoveredWaystones")) {
             if (!QuickWaystones.getOrCreatePlayerAccess(player.getUniqueId()).contains(QuickWaystones.getWaystonesMap().get(location).getId())) {
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneDiscovered"))
+                player.sendMessage(Utils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneDiscovered"))
                 );
                 QuickWaystones.getOrCreatePlayerAccess(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(location).getId());
             }

@@ -2,7 +2,7 @@ package dev.pozzoo.quickwaystones.gui;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
-import dev.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static dev.pozzoo.quickwaystones.utils.EnchantmentUtils.applyGlint;
+import static dev.pozzoo.quickwaystones.utils.Utils.applyGlint;
 
 public class WaystoneGUI implements Listener {
 
@@ -80,7 +80,7 @@ public class WaystoneGUI implements Listener {
         int totalPages = Math.max(1, (int) Math.ceil(totalItems / (double) PAGE_SIZE));
         int currentPage = Math.max(0, Math.min(page, totalPages - 1));
 
-        Component title = StringUtils.formatString("Waystones - ").append(StringUtils.formatString(waystoneData.getName()));
+        Component title = Utils.formatString("Waystones - ").append(Utils.formatString(waystoneData.getName()));
 
         WaystoneHolder holder = new WaystoneHolder(currentPage, totalPages, waystoneData);
         Inventory inv = Bukkit.createInventory(holder, INVENTORY_SIZE, title);
@@ -95,7 +95,7 @@ public class WaystoneGUI implements Listener {
             ItemStack item = new ItemStack(ws.getIcon());
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                meta.displayName(StringUtils.formatItemName(ws.getName()));
+                meta.displayName(Utils.formatItemName(ws.getName()));
                 if (selectedId != null && selectedId == ws.getId()) {
                     applyGlint(meta);
                 }
@@ -109,15 +109,15 @@ public class WaystoneGUI implements Listener {
         // Pagination controls if multiple pages
         if (totalPages > 1) {
             // Page indicator
-            inv.setItem(PAGE_SLOT, named(StringUtils.formatString("Page " + (currentPage + 1) + "/" + totalPages)));
+            inv.setItem(PAGE_SLOT, named(Utils.formatString("Page " + (currentPage + 1) + "/" + totalPages)));
 
             // Previous
             if (currentPage > 0) {
-                inv.setItem(PREV_SLOT, named(StringUtils.formatString("Previous")));
+                inv.setItem(PREV_SLOT, named(Utils.formatString("Previous")));
             }
             // Next
             if (currentPage < totalPages - 1) {
-                inv.setItem(NEXT_SLOT, named(StringUtils.formatString("Next")));
+                inv.setItem(NEXT_SLOT, named(Utils.formatString("Next")));
             }
         }
 
@@ -127,10 +127,10 @@ public class WaystoneGUI implements Listener {
         ItemMeta btnMeta = reorderBtn.getItemMeta();
         if (btnMeta != null) {
             if (reordering) {
-                btnMeta.displayName(StringUtils.formatString("<green>Reordering"));
+                btnMeta.displayName(Utils.formatString("<green>Reordering"));
                 applyGlint(btnMeta);
             } else {
-                btnMeta.displayName(StringUtils.formatString("Reorder"));
+                btnMeta.displayName(Utils.formatString("Reorder"));
             }
             reorderBtn.setItemMeta(btnMeta);
         }
@@ -220,7 +220,7 @@ public class WaystoneGUI implements Listener {
                 ws.setIcon(cursor.getType());
                 QuickWaystones.saveData();
                 String message = QuickWaystones.getInstance().getConfig().getString("Messages.WaystoneIconChanged", "Waystone icon changed!");
-                player.sendMessage(StringUtils.formatString("<green>" + message));
+                player.sendMessage(Utils.formatString("<green>" + message));
                 player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.5f);
                 openPage(player, holder.page, holder.waystoneData);
                 return;
@@ -255,7 +255,7 @@ public class WaystoneGUI implements Listener {
             // Waystone teleport
             if (ws.getId() == holder.waystoneData.getId()) {
                 String message = QuickWaystones.getInstance().getConfig().getString("Messages.SameWaystone", "You cannot teleport to the same waystone!");
-                player.sendMessage(StringUtils.formatString("<red>" + message));
+                player.sendMessage(Utils.formatString("<red>" + message));
                 player.playSound(player, Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.1f, 1);
                 return;
             }
@@ -266,7 +266,7 @@ public class WaystoneGUI implements Listener {
                 if (player.getLevel() < xpCost) {
                     String message = QuickWaystones.getInstance().getConfig().getString("Messages.InsufficientXp", "You need {xp} XP level(s) to use this waystone!");
                     message = message.replace("{xp}", String.valueOf(xpCost));
-                    player.sendMessage(StringUtils.formatString("<red>" + message));
+                    player.sendMessage(Utils.formatString("<red>" + message));
                     player.playSound(player, Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.1f, 1);
                     return;
                 }

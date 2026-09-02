@@ -1,7 +1,7 @@
 package dev.pozzoo.quickwaystones.managers;
 
 import dev.pozzoo.quickwaystones.data.WaystoneData;
-import dev.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.utils.Utils;
 import io.papermc.paper.potion.PotionMix;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.pozzoo.quickwaystones.utils.EnchantmentUtils.applyGlint;
+import static dev.pozzoo.quickwaystones.utils.Utils.applyGlint;
 
 public class PotionManager {
 
@@ -51,9 +51,9 @@ public class PotionManager {
         meta.setBasePotionType(PotionType.THICK);
         meta.setColor(Color.PURPLE);
         meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "undrinkable");
-        meta.itemName(StringUtils.formatItemName(this.plugin.getConfig().getString("Messages.TeleportationPotion")));
-        meta.customName(StringUtils.formatItemName(this.plugin.getConfig().getString("Messages.TeleportationPotion")));
-        meta.lore(StringUtils.formatStringList(lore));
+        meta.itemName(Utils.formatItemName(this.plugin.getConfig().getString("Messages.TeleportationPotion")));
+        meta.customName(Utils.formatItemName(this.plugin.getConfig().getString("Messages.TeleportationPotion")));
+        meta.lore(Utils.formatStringList(lore));
         result.setItemMeta(meta);
 
         PotionMix mix = new PotionMix(key, result, input, ingredient);
@@ -70,9 +70,9 @@ public class PotionManager {
         meta.setBasePotionType(PotionType.THICK);
         meta.setColor(Color.PURPLE);
         meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "drinkable");
-        meta.itemName(StringUtils.formatItemName((plugin.getConfig().getString("Messages.LinkedTeleportationPotion"))));
-        meta.customName(StringUtils.formatItemName((plugin.getConfig().getString("Messages.LinkedTeleportationPotion"))));
-        meta.lore(StringUtils.formatStringList(lore));
+        meta.itemName(Utils.formatItemName((plugin.getConfig().getString("Messages.LinkedTeleportationPotion"))));
+        meta.customName(Utils.formatItemName((plugin.getConfig().getString("Messages.LinkedTeleportationPotion"))));
+        meta.lore(Utils.formatStringList(lore));
 
         applyGlint(meta);
 

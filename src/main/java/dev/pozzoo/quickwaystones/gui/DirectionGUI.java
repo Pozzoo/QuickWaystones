@@ -2,8 +2,7 @@ package dev.pozzoo.quickwaystones.gui;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
-import dev.pozzoo.quickwaystones.utils.EnchantmentUtils;
-import dev.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -70,7 +69,7 @@ public class DirectionGUI implements Listener {
 
         meta.setLodestoneTracked(false);
         meta.setLodestone(front);
-        EnchantmentUtils.applyGlint(meta, waystoneData.getDirection() == 180);
+        Utils.applyGlint(meta, waystoneData.getDirection() == 180);
 
         item.setItemMeta(meta);
         inv.setItem(4, item);
@@ -81,7 +80,7 @@ public class DirectionGUI implements Listener {
 
         meta.setLodestoneTracked(false);
         meta.setLodestone(left);
-        EnchantmentUtils.applyGlint(meta, waystoneData.getDirection() == 90);
+        Utils.applyGlint(meta, waystoneData.getDirection() == 90);
 
         item.setItemMeta(meta);
         inv.setItem(12, item);
@@ -96,7 +95,7 @@ public class DirectionGUI implements Listener {
 
         meta.setLodestoneTracked(false);
         meta.setLodestone(right);
-        EnchantmentUtils.applyGlint(meta, waystoneData.getDirection() == -90);
+        Utils.applyGlint(meta, waystoneData.getDirection() == -90);
 
         item.setItemMeta(meta);
         inv.setItem(14, item);
@@ -107,7 +106,7 @@ public class DirectionGUI implements Listener {
 
         meta.setLodestoneTracked(false);
         meta.setLodestone(back);
-        EnchantmentUtils.applyGlint(meta, waystoneData.getDirection() == 0);
+        Utils.applyGlint(meta, waystoneData.getDirection() == 0);
 
         item.setItemMeta(meta);
         inv.setItem(22, item);
@@ -157,21 +156,21 @@ public class DirectionGUI implements Listener {
         switch (index) {
             case 1:
                 QuickWaystones.getWaystonesMap().get(holder.waystoneData.getLocation()).setDirection(180);
-                player.sendMessage(StringUtils.formatString("<gold>" + holder.waystoneData.getName() + " " + QuickWaystones.getInstance().getConfig().getString("Messages.SetWaystoneNorth")));
+                player.sendMessage(Utils.formatString("<gold>" + holder.waystoneData.getName() + " " + QuickWaystones.getInstance().getConfig().getString("Messages.SetWaystoneNorth")));
                 break;
             case 2:
                 QuickWaystones.getWaystonesMap().get(holder.waystoneData.getLocation()).setDirection(90);
-                player.sendMessage(StringUtils.formatString("<gold>" + holder.waystoneData.getName() + " " + QuickWaystones.getInstance().getConfig().getString("Messages.SetWaystoneWest")));
+                player.sendMessage(Utils.formatString("<gold>" + holder.waystoneData.getName() + " " + QuickWaystones.getInstance().getConfig().getString("Messages.SetWaystoneWest")));
 
                 break;
             case 4:
                 QuickWaystones.getWaystonesMap().get(holder.waystoneData.getLocation()).setDirection(-90);
-                player.sendMessage(StringUtils.formatString("<gold>" + holder.waystoneData.getName() + " " + QuickWaystones.getInstance().getConfig().getString("Messages.SetWaystoneEast")));
+                player.sendMessage(Utils.formatString("<gold>" + holder.waystoneData.getName() + " " + QuickWaystones.getInstance().getConfig().getString("Messages.SetWaystoneEast")));
 
                 break;
             case 5:
                 QuickWaystones.getWaystonesMap().get(holder.waystoneData.getLocation()).setDirection(0);
-                player.sendMessage(StringUtils.formatString("<gold>" + holder.waystoneData.getName() + " " + QuickWaystones.getInstance().getConfig().getString("Messages.SetWaystoneSouth")));
+                player.sendMessage(Utils.formatString("<gold>" + holder.waystoneData.getName() + " " + QuickWaystones.getInstance().getConfig().getString("Messages.SetWaystoneSouth")));
                 break;
             default:
                 return;

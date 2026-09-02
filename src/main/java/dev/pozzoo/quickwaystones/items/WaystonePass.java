@@ -1,7 +1,7 @@
 package dev.pozzoo.quickwaystones.items;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
-import dev.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +10,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collections;
 
-import static dev.pozzoo.quickwaystones.utils.EnchantmentUtils.applyGlint;
+import static dev.pozzoo.quickwaystones.utils.Utils.applyGlint;
 
 public class WaystonePass {
 
@@ -26,8 +26,8 @@ public class WaystonePass {
         ItemMeta meta = item.getItemMeta();
 
         if (meta != null) {
-            meta.displayName(StringUtils.formatString("Waystone Pass"));
-            meta.lore(StringUtils.formatStringList(Collections.singletonList("Right click to discover the assigned waystone!")));
+            meta.displayName(Utils.formatString("Waystone Pass"));
+            meta.lore(Utils.formatStringList(Collections.singletonList("Right click to discover the assigned waystone!")));
 
             applyGlint(meta);
 
