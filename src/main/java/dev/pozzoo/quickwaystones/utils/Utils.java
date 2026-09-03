@@ -1,17 +1,16 @@
 package dev.pozzoo.quickwaystones.utils;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
+import dev.pozzoo.quickwaystones.data.WaystoneData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,5 +79,31 @@ public class Utils {
         }
 
         return true;
+    }
+
+    public static void teleportPlayer(WaystoneData ws, Player player) {
+        Vector locationModifier = new Vector(0.5, 0, 0.5);
+
+        switch (ws.getDirection()) {
+            case 0:
+                locationModifier.setZ(1);
+                break;
+            case 90:
+                locationModifier.setX(-1);
+                break;
+            case 180:
+                locationModifier.setZ(-1);
+                break;
+            case -90:
+                locationModifier.setX(1);
+                break;
+        }
+
+        Location teleportLocation = ws.getLocation().clone().add(0.5, 0, 0.5);
+        teleportLocation.setYaw(ws.getDirection());
+
+        player.teleport(teleportLocation.add(locationModifier));
+        player.getWorld().spawnParticle(Particle.PORTAL, player.getLocation(), 5);
+        player.playSound(player, Sound.ENTITY_FOX_TELEPORT, 0.5f, 1f);
     }
 }
