@@ -123,7 +123,7 @@ public class WaystoneGUI implements Listener {
 
         // Reorder button
         boolean reordering = reorderingPlayers.contains(player.getUniqueId());
-        ItemStack reorderBtn = new ItemStack(Material.CRAFTING_TABLE);
+        ItemStack reorderBtn = new ItemStack(Material.CHEST);
         ItemMeta btnMeta = reorderBtn.getItemMeta();
         if (btnMeta != null) {
             if (reordering) {
