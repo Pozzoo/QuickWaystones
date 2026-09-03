@@ -111,6 +111,13 @@ public class OnPlayerInteract implements Listener {
                     .getItemMeta()
                     .displayName();
 
+                WaystoneData waystone = QuickWaystones.getWaystonesMap().get(location);
+
+                if ((player.getUniqueId() != waystone.getOwner()) && !player.isOp()) {
+                    player.sendMessage(Utils.formatString("<red>" + this.plugin.getConfig().getString("Messages.WaystoneBrokenByOther", "This waystone isn't yours")));
+                    return;
+                }
+
                 if (textComponent == null) return;
                 if (textComponent.content().equals(QuickWaystones.getWaystonesMap().get(location).getName())) return;
 
@@ -131,7 +138,7 @@ public class OnPlayerInteract implements Listener {
                 player.getInventory().setItemInMainHand(PotionManager.getActivePotion(QuickWaystones.getWaystone(location), plugin, key));
                 player.playSound(player, Sound.BLOCK_BEACON_POWER_SELECT, 1, 1);
 
-                String message = QuickWaystones.getInstance().getConfig().getString("Messages.TeleportationPotionActivated", "Potion was linked to {waystone}!");
+                String message = this.plugin.getConfig().getString("Messages.TeleportationPotionActivated", "Potion was linked to {waystone}!");
                 message = message.replace("{waystone}", QuickWaystones.getWaystone(location).getName());
                 player.sendMessage(Utils.formatString("<gold>" + message));
 

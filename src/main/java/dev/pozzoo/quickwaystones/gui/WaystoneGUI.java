@@ -217,6 +217,11 @@ public class WaystoneGUI implements Listener {
         if (ws != null) {
             ItemStack cursor = event.getCursor();
             if (cursor.getType() != Material.AIR) {
+                if (player.getUniqueId() != ws.getOwner()) {
+                    player.sendMessage(Utils.formatString("<red>" + QuickWaystones.getInstance().getConfig().getString("Messages.WaystoneBrokenByOther", "This waystone isn't yours")));
+                    return;
+                }
+
                 ws.setIcon(cursor.getType());
                 QuickWaystones.saveData();
                 String message = QuickWaystones.getInstance().getConfig().getString("Messages.WaystoneIconChanged", "Waystone icon changed!");
@@ -225,7 +230,7 @@ public class WaystoneGUI implements Listener {
                 openPage(player, holder.page, holder.waystoneData);
                 return;
             }
-          
+
             UUID playerId = player.getUniqueId();
             if (reorderingPlayers.contains(playerId)) {
                 Integer selected = firstSelections.get(playerId);
