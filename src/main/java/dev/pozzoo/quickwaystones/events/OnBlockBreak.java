@@ -5,6 +5,7 @@ import dev.pozzoo.quickwaystones.data.WaystoneData;
 import dev.pozzoo.quickwaystones.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +23,8 @@ public class OnBlockBreak implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getType() != Material.LODESTONE) return;
+
+        event.getBlock().getRelative(BlockFace.UP).setType(Material.AIR);
 
         Player player = event.getPlayer();
         WaystoneData waystone = QuickWaystones.getWaystonesMap().get(event.getBlock().getLocation());
