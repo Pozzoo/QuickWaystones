@@ -2,3 +2,5 @@ PluginVersion: ${project.version}
 Waystones:
 
 Access:
+
+Order:
