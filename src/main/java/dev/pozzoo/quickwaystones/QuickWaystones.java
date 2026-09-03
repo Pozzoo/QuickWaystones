@@ -2,9 +2,7 @@ package dev.pozzoo.quickwaystones;
 
 import dev.pozzoo.quickwaystones.commands.MainCommand;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
-import dev.pozzoo.quickwaystones.events.OnBlockBreak;
-import dev.pozzoo.quickwaystones.events.OnConsume;
-import dev.pozzoo.quickwaystones.events.OnPlayerInteract;
+import dev.pozzoo.quickwaystones.events.*;
 import dev.pozzoo.quickwaystones.items.WaystonePass;
 import dev.pozzoo.quickwaystones.managers.CraftManager;
 import dev.pozzoo.quickwaystones.managers.DataManager;
@@ -25,8 +23,7 @@ public final class QuickWaystones extends JavaPlugin {
 
     private static QuickWaystones plugin;
     private static DataManager dataManager;
-    private static final Map<Location, WaystoneData> waystonesMap =
-        new HashMap<>();
+    private static final Map<Location, WaystoneData> waystonesMap = new HashMap<>();
     private static final Map<UUID, Set<Integer>> playerAccess = new HashMap<>();
     private static final Map<UUID, List<Integer>> playerWaystoneOrder = new HashMap<>();
     private static int lastWaystoneID = 0;
@@ -51,6 +48,8 @@ public final class QuickWaystones extends JavaPlugin {
         new OnPlayerInteract(plugin);
         new OnBlockBreak(plugin);
         new OnConsume(plugin);
+        new OnBlockPlace(plugin);
+        new OnExplode(plugin);
 
         dataManager = new DataManager();
         lastWaystoneID = dataManager.loadData();
