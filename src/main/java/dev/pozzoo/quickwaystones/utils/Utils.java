@@ -82,24 +82,35 @@ public class Utils {
     }
 
     public static void teleportPlayer(WaystoneData ws, Player player) {
-        Vector locationModifier = new Vector(0.5, 0, 0.5);
+        Vector locationModifier = new Vector(0, 0, 0);
 
         switch (ws.getDirection()) {
+            //South
             case 0:
-                locationModifier.setZ(1);
+                locationModifier.setZ(1.5);
+                locationModifier.setX(0.5);
                 break;
+
+            //West
             case 90:
-                locationModifier.setX(-1);
+                locationModifier.setX(-0.5);
+                locationModifier.setZ(0.5);
                 break;
+
+            //North
             case 180:
-                locationModifier.setZ(-1);
+                locationModifier.setZ(-0.5);
+                locationModifier.setX(0.5);
                 break;
+
+            //East
             case -90:
-                locationModifier.setX(1);
+                locationModifier.setX(1.5);
+                locationModifier.setZ(0.5);
                 break;
         }
 
-        Location teleportLocation = ws.getLocation().clone().add(0.5, 0, 0.5);
+        Location teleportLocation = ws.getLocation().clone();
         teleportLocation.setYaw(ws.getDirection());
 
         player.teleport(teleportLocation.add(locationModifier));
