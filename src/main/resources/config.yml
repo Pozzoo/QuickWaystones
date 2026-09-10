@@ -2,6 +2,7 @@ Settings:
   HideUndiscoveredWaystones: true
   EnableWaystonePass: true
   XpCost: 5
+  ForceResourcePack: false
 Messages:
   WaystoneActivated: "Waystone Activated"
   WaystoneBrokenByOther: "This waystone isn't yours"
@@ -23,3 +24,4 @@ Messages:
   LinkedTeleportationPotion: "Linked Teleportation Potion"
   Inactive: "Inactive"
   LinkedTo: "Linked To:"
+  ResourcePackPrompt: "Download QuickWaystones Resource Pack?"

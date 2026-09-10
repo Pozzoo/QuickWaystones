@@ -50,6 +50,7 @@ public final class QuickWaystones extends JavaPlugin {
         new OnConsume(plugin);
         new OnBlockPlace(plugin);
         new OnExplode(plugin);
+        new OnPlayerJoin(plugin);
 
         dataManager = new DataManager();
         lastWaystoneID = dataManager.loadData();
