@@ -49,6 +49,15 @@ public class OnBlockBreak implements Listener {
             if (event.getBlock().getRelative(BlockFace.DOWN).getBlockData().getMaterial() != Material.LODESTONE) return;
 
             Block down = event.getBlock().getRelative(BlockFace.DOWN);
+            WaystoneData waystone = QuickWaystones.getWaystonesMap().get(down.getLocation());
+            if (waystone == null) return;
+
+            if (!(event.getPlayer().isOp() || event.getPlayer().getUniqueId().equals(waystone.getOwner()))) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(Utils.formatString("<Red>" + this.plugin.getConfig().getString("Messages.WaystoneBrokenByOther")));
+
+                return;
+            }
 
             event.getBlock().getWorld().spawnParticle(
                     Particle.BLOCK_CRUMBLE,
@@ -62,11 +71,7 @@ public class OnBlockBreak implements Listener {
 
             down.setType(Material.AIR);
 
-            WaystoneData waystone = QuickWaystones.getWaystonesMap().get(event.getBlock().getLocation());
-
-            if (waystone == null) return;
-
-            QuickWaystones.removeWaystone(event.getBlock().getLocation());
+            QuickWaystones.removeWaystone(down.getLocation());
             QuickWaystones.removeAccess(waystone.getId());
 
             QuickWaystones.saveData();
