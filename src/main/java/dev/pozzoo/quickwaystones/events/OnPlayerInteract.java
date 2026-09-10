@@ -9,6 +9,7 @@ import dev.pozzoo.quickwaystones.utils.Utils;
 import java.util.HashMap;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,10 +71,19 @@ public class OnPlayerInteract implements Listener {
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getClickedBlock() == null) return;
-        if (event.getClickedBlock().getType() != Material.LODESTONE) return;
+        if (event.getClickedBlock().getType() != Material.LODESTONE && event.getClickedBlock().getType() != Material.BARRIER) return;
         if (event.getPlayer().isSneaking()) return;
 
-        Location location = event.getClickedBlock().getLocation();
+        Location location;
+
+        if (event.getClickedBlock().getType() == Material.BARRIER) {
+            if (event.getClickedBlock().getRelative(BlockFace.DOWN).getBlockData().getMaterial() != Material.LODESTONE) return;
+
+            location = event.getClickedBlock().getRelative(BlockFace.DOWN).getLocation();
+        } else {
+            location = event.getClickedBlock().getLocation();
+
+        }
 
         event.setCancelled(true);
 
