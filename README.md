@@ -47,6 +47,9 @@ We welcome all kinds of contributions! Open feature requests, report issues, or 
 ### Contributors
 - [m1kau](https://github.com/m1kau) - for the XP cost, icons and reordering features!!
 
+## Known Limitations
+- Placing blocks next to the bottom of a waystone culls them (makes the side facing the waystone invisible), this is a limitation of using the lodestone block as a base, and im currently looking for ways to fix it. 
+
 ## License
 QuickWaystones is open-source and licensed under the GNU GPL v3 License. For more details, refer to the [LICENSE](https://github.com/Pozzoo/QuickWaystones/blob/main/LICENSE) file.
 
