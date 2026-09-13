@@ -1,18 +1,16 @@
 package dev.pozzoo.quickwaystones.items;
 
 import dev.pozzoo.quickwaystones.QuickWaystones;
-import dev.pozzoo.quickwaystones.utils.StringUtils;
+import dev.pozzoo.quickwaystones.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collections;
 
-import static dev.pozzoo.quickwaystones.utils.EnchantmentUtils.getInfinityEnchant;
+import static dev.pozzoo.quickwaystones.utils.Utils.applyGlint;
 
 public class WaystonePass {
 
@@ -28,15 +26,10 @@ public class WaystonePass {
         ItemMeta meta = item.getItemMeta();
 
         if (meta != null) {
-            meta.displayName(StringUtils.formatString("Waystone Pass"));
-            meta.lore(StringUtils.formatStringList(Collections.singletonList("Right click to discover the assigned waystone!")));
+            meta.displayName(Utils.formatString("Waystone Pass"));
+            meta.lore(Utils.formatStringList(Collections.singletonList("Right click to discover the assigned waystone!")));
 
-            Enchantment infinity = getInfinityEnchant();
-            if (infinity != null) {
-                meta.addEnchant(infinity, 5, true);
-            }
-
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            applyGlint(meta);
 
             meta.getPersistentDataContainer().set(this.pass_key, PersistentDataType.BYTE, (byte) 1);
             item.setItemMeta(meta);
