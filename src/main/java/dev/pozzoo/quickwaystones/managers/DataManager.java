@@ -3,6 +3,7 @@ package dev.pozzoo.quickwaystones.managers;
 import dev.pozzoo.quickwaystones.QuickWaystones;
 import dev.pozzoo.quickwaystones.data.WaystoneData;
 import java.io.File;
+import org.bukkit.Material;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -81,12 +83,20 @@ public class DataManager {
                 }
 
                 int id = Integer.parseInt(key);
+                String iconName = config.getString(basePath + ".icon", "ENDER_PEARL");
+                Material icon;
+                try {
+                    icon = Material.valueOf(iconName);
+                } catch (IllegalArgumentException e) {
+                    icon = Material.ENDER_PEARL;
+                }
                 WaystoneData waystoneData = new WaystoneData(
                     id,
                     config.getString(basePath + ".name", "Waystone " + id),
                     location,
                     UUID.fromString(ownerValue),
-                    config.getInt(basePath + ".direction", 0)
+                    config.getInt(basePath + ".direction", 0),
+                    icon
                 );
                 QuickWaystones.getWaystonesMap().put(
                     waystoneData.getLocation(),
@@ -119,12 +129,22 @@ public class DataManager {
             }
         }
 
+        ConfigurationSection orderSection = config.getConfigurationSection("Order");
+        if (orderSection != null) {
+            for (String key : orderSection.getKeys(false)) {
+                UUID playerId = UUID.fromString(key);
+                List<Integer> order = new ArrayList<>(config.getIntegerList("Order." + key));
+                QuickWaystones.getPlayerWaystoneOrder().put(playerId, order);
+            }
+        }
+
         return lastComputedId;
     }
 
     public void saveData(
         Iterable<WaystoneData> waystones,
-        Map<UUID, Set<Integer>> playerAccess
+        Map<UUID, Set<Integer>> playerAccess,
+        Map<UUID, List<Integer>> playerWaystoneOrder
     ) {
         config = new YamlConfiguration();
         config.set(
@@ -142,6 +162,7 @@ public class DataManager {
             config.set(basePath + ".location", waystone.getLocation());
             config.set(basePath + ".owner", waystone.getOwner().toString());
             config.set(basePath + ".direction", waystone.getDirection());
+            config.set(basePath + ".icon", waystone.getIcon().name());
         }
 
         playerAccess
@@ -158,6 +179,19 @@ public class DataManager {
                         .stream()
                         .sorted()
                         .toArray(Integer[]::new)
+                )
+            );
+
+        playerWaystoneOrder
+            .entrySet()
+            .stream()
+            .sorted(
+                Map.Entry.comparingByKey(Comparator.comparing(UUID::toString))
+            )
+            .forEach(entry ->
+                config.set(
+                    "Order." + entry.getKey(),
+                    entry.getValue().stream().collect(Collectors.toList())
                 )
             );
 

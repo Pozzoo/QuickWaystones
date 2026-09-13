@@ -125,21 +125,27 @@ public final class DataMigrator {
                     basePath + ".direction",
                     source.getInt(basePath + ".direction", 0)
                 );
+                migrated.set(
+                        basePath + ".icon",
+                        source.getString(basePath + ".icon", "ENDER_PEARL")
+                );
             }
         }
 
         ConfigurationSection accessSection = source.getConfigurationSection(
             "Access"
         );
-        if (accessSection == null) {
-            return;
+        if (accessSection != null) {
+            for (String key : new TreeSet<>(accessSection.getKeys(false))) {
+                migrated.set(
+                        "Access." + key,
+                        source.getIntegerList("Access." + key).toArray(new Integer[0])
+                );
+            }
         }
 
-        for (String key : new TreeSet<>(accessSection.getKeys(false))) {
-            migrated.set(
-                "Access." + key,
-                source.getIntegerList("Access." + key).toArray(new Integer[0])
-            );
+        if (source.contains("Order")) {
+            migrated.set("Order", source.getIntegerList("Order"));
         }
     }
 
@@ -187,6 +193,7 @@ public final class DataMigrator {
             migrated.set("Waystones." + nextId + ".location", location);
             migrated.set("Waystones." + nextId + ".owner", owner.toString());
             migrated.set("Waystones." + nextId + ".direction", 0);
+            migrated.set("Waystones." + ".icon", source.getString(basePath + ".icon", "ENDER_PEARL"));
 
             validIds.add(nextId);
             accessByPlayer
