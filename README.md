@@ -8,7 +8,9 @@ QuickWaystones is a Minecraft plugin that brings the convenience of instant trav
 <br><br>
 
 - Custom Model for Waystones (lodestones):
-<img width="407" height="320" alt="Pasted Image (Copy 1)(1)" src="https://github.com/user-attachments/assets/b5742cc9-6c5a-4b81-8909-cec6a709e17b" />
+<img width="407" height="320" src="https://github.com/user-attachments/assets/b5742cc9-6c5a-4b81-8909-cec6a709e17b" />
+
+(You can make it forced or optional for players)
 <br><br>
 
 - Rename your waystones with a name tag to keep them organized!
